@@ -67,20 +67,21 @@ server {
     add_header X-Content-Type-Options "nosniff";
 
     # Handle API requests (Laravel Backend)
-    location ^~ /api/ {
-        # Redirect requests like /api/login to /login internally
-        rewrite ^/api/(.*)$ /\$1 break;
-        root $BACKEND_DIR/public;
-        index index.php;
-        try_files \$uri \$uri/ /index.php?\$query_string;
+    location /api {
+        alias $BACKEND_DIR/public;
+        try_files \$uri \$uri/ @laravel;
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
             fastcgi_pass unix:$PHP_SOCKET;
-            # This allows test_db.php and index.php to both work
+            # Use request_filename since alias handles the mapping
             fastcgi_param SCRIPT_FILENAME \$request_filename;
             include fastcgi_params;
         }
+    }
+
+    location @laravel {
+        rewrite /api/(.*)\$ /api/index.php?/\$1 last;
     }
 
     # Serve Frontend for everything else
