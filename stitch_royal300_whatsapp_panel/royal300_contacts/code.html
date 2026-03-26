@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contacts Management - Royal300</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#3de273",
+              "primary-fixed": "#66ff8e",
+              "on-primary-fixed-variant": "#005322",
+              "secondary-container": "#8cf1e1",
+              "tertiary-container": "#ffa07e",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed": "#380d00",
+              "error-container": "#ffdad6",
+              "tertiary": "#93492e",
+              "on-tertiary-fixed-variant": "#763319",
+              "primary-fixed-dim": "#3de273",
+              "surface-container-high": "#e0e9f3",
+              "surface": "#f6f9ff",
+              "outline": "#6c7b6b",
+              "surface-dim": "#d2dbe5",
+              "on-secondary-fixed": "#00201c",
+              "on-secondary": "#ffffff",
+              "on-background": "#141d24",
+              "tertiary-fixed-dim": "#ffb59b",
+              "on-surface": "#141d24",
+              "surface-container-low": "#ebf5ff",
+              "surface-container-highest": "#dae3ee",
+              "on-tertiary": "#ffffff",
+              "outline-variant": "#bbcbb9",
+              "inverse-surface": "#293139",
+              "surface-tint": "#006d2f",
+              "on-surface-variant": "#3c4a3d",
+              "background": "#f6f9ff",
+              "inverse-on-surface": "#e9f2fc",
+              "primary": "#006d2f",
+              "secondary-fixed-dim": "#72d8c8",
+              "surface-bright": "#f6f9ff",
+              "error": "#ba1a1a",
+              "surface-container": "#e6eff9",
+              "secondary": "#006b5f",
+              "secondary-fixed": "#8ff4e3",
+              "on-secondary-container": "#006f64",
+              "on-primary": "#ffffff",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#ffdbcf",
+              "on-secondary-fixed-variant": "#005047",
+              "on-primary-fixed": "#002109",
+              "surface-variant": "#dae3ee",
+              "on-primary-container": "#005523",
+              "primary-container": "#25d366",
+              "on-tertiary-container": "#78351b"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f6f9ff;
+        }
+        .sidebar-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] flex flex-col h-full py-6 z-50">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-800 to-green-400 flex items-center justify-center text-white font-black text-xl">R</div>
+<div>
+<h1 class="text-2xl font-black bg-gradient-to-br from-green-800 to-green-400 bg-clip-text text-transparent leading-none">Royal300</h1>
+<p class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant/60 mt-1">Fluid Authority</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                Dashboard
+            </a>
+<!-- Active Navigation: Contacts -->
+<a class="flex items-center bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold rounded-lg ml-2 mr-4 py-3 px-4 font-['Plus_Jakarta_Sans'] text-sm tracking-tight active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">person</span>
+                Contacts
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">description</span>
+                Templates
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">campaign</span>
+                Campaigns
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">inbox</span>
+                Team Inbox
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">smart_toy</span>
+                Automation
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">monitoring</span>
+                Analytics
+            </a>
+<a class="flex items-center text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-300 ml-2 mr-4 py-3 px-4 transition-all font-['Plus_Jakarta_Sans'] font-semibold text-sm tracking-tight hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-3">
+<p class="text-xs font-bold text-primary tracking-tight">System Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="text-[11px] font-medium text-on-surface-variant">API Connected</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-[#f6f9ff]/80 dark:bg-slate-950/80 backdrop-blur-md flex justify-between items-center px-8 font-['Plus_Jakarta_Sans'] font-medium">
+<div class="flex items-center bg-surface-container-highest rounded-full px-4 py-2 w-96 focus-within:ring-2 focus-within:ring-green-500/20 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-xl mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-on-surface-variant/50" placeholder="Search contacts, tags, or phone..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-green-600 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-[#f6f9ff]"></span>
+</button>
+<button class="text-slate-500 hover:text-green-600 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Admin Account</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container/30" data-alt="User profile avatar close up" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSfZuw3pwU2GppMqftEgmaQQyVjf8DYWn_et-0MvMpLcvU8IHfRBHktmeEzoD44wJGs5R2OV7LVXXTVHNJunY87XK-g2Vojj9Zx2AeZOBRUkN9T3K-WYHo5JbvoQbVMa5izfs3qNvxXeGtqZkMj0x611awa-TVsUknXylCat6_dh892wxaftazPsb1cBFGVIIqg9uR8sVbQMjzqVxcVcdadeijh9Cyrs4ilYZg4dx9cOBk4YCO9Fa262FGJZmWJfLyip3j4mULn4Q"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-10 min-h-screen">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-2">Contacts</h2>
+<p class="text-on-surface-variant font-body">Manage your audience and conversational segments with precision.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-5 py-2.5 rounded-xl font-headline font-bold text-sm bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">upload_file</span>
+                    Import CSV
+                </button>
+<button class="px-6 py-2.5 rounded-xl font-headline font-bold text-sm bg-gradient-to-br from-primary to-primary-container text-white shadow-lg shadow-primary/20 hover:lift transition-all active:scale-95 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">person_add</span>
+                    Add Contact
+                </button>
+</div>
+</div>
+<!-- Filter & Utility Bar -->
+<div class="grid grid-cols-12 gap-6 mb-8">
+<div class="col-span-12 lg:col-span-8 flex flex-wrap gap-4">
+<div class="bg-surface-container-low px-4 py-2.5 rounded-xl flex items-center gap-3 min-w-[160px]">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Status:</span>
+<select class="bg-transparent border-none p-0 text-sm font-semibold focus:ring-0 text-primary cursor-pointer">
+<option>All Status</option>
+<option>Subscribed</option>
+<option>Unsubscribed</option>
+</select>
+</div>
+<div class="bg-surface-container-low px-4 py-2.5 rounded-xl flex items-center gap-3 min-w-[160px]">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tag:</span>
+<select class="bg-transparent border-none p-0 text-sm font-semibold focus:ring-0 text-primary cursor-pointer">
+<option>Any Tag</option>
+<option>VIP Clients</option>
+<option>New Leads</option>
+<option>Bounced</option>
+</select>
+</div>
+<button class="flex items-center gap-2 text-on-surface-variant font-bold text-sm px-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">filter_list</span>
+                    Advanced Filters
+                </button>
+</div>
+<div class="col-span-12 lg:col-span-4 flex justify-end items-center text-on-surface-variant text-sm font-medium">
+                Showing <span class="text-on-surface font-bold mx-1">1,248</span> contacts
+            </div>
+</div>
+<!-- Contacts Data Table -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-[0px_20px_40px_rgba(20,29,36,0.06)]">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-8 py-5 text-[11px] font-black text-on-surface-variant uppercase tracking-[0.15em] font-headline border-none">Name</th>
+<th class="px-6 py-5 text-[11px] font-black text-on-surface-variant uppercase tracking-[0.15em] font-headline border-none">Phone Number</th>
+<th class="px-6 py-5 text-[11px] font-black text-on-surface-variant uppercase tracking-[0.15em] font-headline border-none">Tags</th>
+<th class="px-6 py-5 text-[11px] font-black text-on-surface-variant uppercase tracking-[0.15em] font-headline border-none">Status</th>
+<th class="px-8 py-5 text-[11px] font-black text-on-surface-variant uppercase tracking-[0.15em] font-headline border-none text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<!-- Row 1 -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold font-headline">JD</div>
+<div>
+<p class="text-sm font-bold text-on-surface leading-tight">James Donovan</p>
+<p class="text-xs text-on-surface-variant">james.d@company.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium font-body text-on-surface-variant">+1 (555) 012-3456</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed uppercase tracking-wider">VIP Client</span>
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-surface-container-highest text-on-surface-variant uppercase tracking-wider">Tech</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-[11px] font-bold text-primary bg-primary-container/10 px-3 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+                                Subscribed
+                            </div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors hover:bg-error/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors bg-surface-container-low/10">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary font-bold font-headline">ML</div>
+<div>
+<p class="text-sm font-bold text-on-surface leading-tight">Maria Lopez</p>
+<p class="text-xs text-on-surface-variant">m.lopez@studio.io</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium font-body text-on-surface-variant">+44 7700 900077</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-tertiary-fixed text-on-tertiary-fixed uppercase tracking-wider">New Lead</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-[11px] font-bold text-primary bg-primary-container/10 px-3 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+                                Subscribed
+                            </div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors hover:bg-error/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-on-surface-variant/10 flex items-center justify-center text-on-surface-variant font-bold font-headline">RK</div>
+<div>
+<p class="text-sm font-bold text-on-surface leading-tight">Robert Kinsley</p>
+<p class="text-xs text-on-surface-variant">rob.kins@mail.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium font-body text-on-surface-variant">+61 412 345 678</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-surface-container-highest text-on-surface-variant uppercase tracking-wider">Inactive</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-[11px] font-bold text-on-surface-variant bg-surface-variant/30 px-3 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-outline"></div>
+                                Unsubscribed
+                            </div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors hover:bg-error/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors bg-surface-container-low/10">
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-on-primary-container font-bold font-headline">SM</div>
+<div>
+<p class="text-sm font-bold text-on-surface leading-tight">Sarah Miller</p>
+<p class="text-xs text-on-surface-variant">sarah.m@retail.biz</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="text-sm font-medium font-body text-on-surface-variant">+1 (555) 987-6543</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-wrap gap-2">
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-secondary-fixed text-on-secondary-fixed uppercase tracking-wider">VIP Client</span>
+<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-tertiary-fixed text-on-tertiary-fixed uppercase tracking-wider">Urgent</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-[11px] font-bold text-primary bg-primary-container/10 px-3 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+                                Subscribed
+                            </div>
+</td>
+<td class="px-8 py-5 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors hover:bg-error/5 rounded-lg">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-8 py-6 bg-surface-container-low/50 flex justify-between items-center">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Page 1 of 42</p>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold bg-primary text-white shadow-md">1</button>
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-all">2</button>
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-all">3</button>
+<span class="mx-2 text-on-surface-variant">...</span>
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-on-surface-variant hover:bg-surface-container-highest transition-all">42</button>
+</div>
+<button class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Summary Cards (Bento style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+<div class="p-6 bg-white rounded-3xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">group_add</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">New this month</p>
+<h4 class="text-2xl font-extrabold font-headline text-on-surface">+184</h4>
+</div>
+</div>
+<div class="p-6 bg-white rounded-3xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl">chat_bubble</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Active Threads</p>
+<h4 class="text-2xl font-extrabold font-headline text-on-surface">512</h4>
+</div>
+</div>
+<div class="p-6 bg-white rounded-3xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] flex items-center gap-5">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-3xl">block</span>
+</div>
+<div>
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Churn Rate</p>
+<h4 class="text-2xl font-extrabold font-headline text-on-surface">2.4%</h4>
+</div>
+</div>
+</div>
+</main>
+</body></html>

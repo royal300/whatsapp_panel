@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Royal300 Campaign Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#ffdbcf",
+              "on-primary-container": "#005523",
+              "on-background": "#141d24",
+              "on-secondary-fixed": "#00201c",
+              "on-secondary": "#ffffff",
+              "tertiary": "#93492e",
+              "on-primary": "#ffffff",
+              "tertiary-fixed-dim": "#ffb59b",
+              "surface-container-low": "#ebf5ff",
+              "secondary-container": "#8cf1e1",
+              "on-error-container": "#93000a",
+              "primary-fixed": "#66ff8e",
+              "on-tertiary-container": "#78351b",
+              "primary-fixed-dim": "#3de273",
+              "on-error": "#ffffff",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#763319",
+              "surface": "#f6f9ff",
+              "secondary": "#006b5f",
+              "surface-dim": "#d2dbe5",
+              "on-secondary-fixed-variant": "#005047",
+              "surface-tint": "#006d2f",
+              "on-primary-fixed": "#002109",
+              "inverse-primary": "#3de273",
+              "on-surface": "#141d24",
+              "inverse-on-surface": "#e9f2fc",
+              "surface-container-lowest": "#ffffff",
+              "secondary-fixed-dim": "#72d8c8",
+              "on-surface-variant": "#3c4a3d",
+              "on-primary-fixed-variant": "#005322",
+              "surface-container": "#e6eff9",
+              "primary": "#006d2f",
+              "error-container": "#ffdad6",
+              "background": "#f6f9ff",
+              "outline-variant": "#bbcbb9",
+              "surface-bright": "#f6f9ff",
+              "surface-container-high": "#e0e9f3",
+              "tertiary-container": "#ffa07e",
+              "surface-container-highest": "#dae3ee",
+              "on-tertiary-fixed": "#380d00",
+              "secondary-fixed": "#8ff4e3",
+              "on-secondary-container": "#006f64",
+              "on-tertiary": "#ffffff",
+              "outline": "#6c7b6b",
+              "surface-variant": "#dae3ee",
+              "primary-container": "#25d366",
+              "inverse-surface": "#293139"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .whatsapp-gradient {
+            background: linear-gradient(135deg, #006d2f 0%, #25d366 100%);
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#f6f9ff] dark:bg-slate-950 flex justify-between items-center px-8 h-16 w-full shadow-none border-b border-transparent">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-extrabold tracking-tight text-[#141d24] dark:text-white">Royal300</span>
+<div class="hidden md:flex items-center space-x-6">
+<span class="text-[#3c4a3d] dark:text-slate-400 hover:text-[#25d366] transition-colors duration-200 cursor-pointer active:scale-95 font-['Plus_Jakarta_Sans'] font-bold text-lg">Dashboard</span>
+<span class="text-[#006d2f] dark:text-[#25d366] font-bold border-b-2 border-[#006d2f] hover:text-[#25d366] transition-colors duration-200 cursor-pointer active:scale-95 font-['Plus_Jakarta_Sans'] font-bold text-lg">Campaigns</span>
+<span class="text-[#3c4a3d] dark:text-slate-400 hover:text-[#25d366] transition-colors duration-200 cursor-pointer active:scale-95 font-['Plus_Jakarta_Sans'] font-bold text-lg">Audience</span>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-[#3c4a3d] cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-[#3c4a3d] cursor-pointer" data-icon="help">help</span>
+<span class="material-symbols-outlined text-[#3c4a3d] cursor-pointer" data-icon="settings">settings</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="User profile avatar circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBM3UeErlhz00pcNrG19_v27zqfZV-L5141VFw2hOiIoZpJH1x_pgB62sws2SPLftMNoVILZuwjzo5XpdanL3RoNF5pS2esxYt36xUyW4--P9fidTevC90qhHNA-K-smPllG69ItabCeBVoNSXhCK4eG_0tkAUukb4Kb1dcVYKc4qPrrfjROux0Mv1UGsWECOVTzUZlSKXFF6B_zPuCDKpDXBYPUPIlJnIahCr3mfDEzKnntQJTEm_uMsiQkI9MXzSk6ReFka7svfE"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#f6f9ff]/70 dark:bg-slate-950/70 backdrop-blur-xl flex flex-col p-6 space-y-4 shadow-[20px_0px_40px_rgba(20,29,36,0.06)] z-40 pt-20">
+<div class="mb-6">
+<div class="flex items-center space-x-3 mb-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="campaign">campaign</span>
+</div>
+<div>
+<h3 class="text-xl font-black text-[#006d2f] leading-tight">Campaign Builder</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Phase: Message Design</p>
+</div>
+</div>
+<button class="w-full whatsapp-gradient text-white py-2.5 rounded-xl font-bold text-sm shadow-sm active:opacity-80 transition-all mt-4">
+                New Campaign
+            </button>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center space-x-3 p-3 text-[#3c4a3d] dark:text-slate-400 hover:bg-[#ebf5ff] dark:hover:bg-slate-900 rounded-lg transition-transform duration-200 hover:translate-x-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Dashboard</span>
+</div>
+<div class="flex items-center space-x-3 p-3 bg-white dark:bg-slate-800 text-[#006d2f] dark:text-[#25d366] rounded-lg shadow-sm transition-transform duration-200 hover:translate-x-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="campaign" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Campaigns</span>
+</div>
+<div class="flex items-center space-x-3 p-3 text-[#3c4a3d] dark:text-slate-400 hover:bg-[#ebf5ff] dark:hover:bg-slate-900 rounded-lg transition-transform duration-200 hover:translate-x-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Audience</span>
+</div>
+<div class="flex items-center space-x-3 p-3 text-[#3c4a3d] dark:text-slate-400 hover:bg-[#ebf5ff] dark:hover:bg-slate-900 rounded-lg transition-transform duration-200 hover:translate-x-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Templates</span>
+</div>
+<div class="flex items-center space-x-3 p-3 text-[#3c4a3d] dark:text-slate-400 hover:bg-[#ebf5ff] dark:hover:bg-slate-900 rounded-lg transition-transform duration-200 hover:translate-x-1 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="font-['Plus_Jakarta_Sans'] text-sm font-semibold">Analytics</span>
+</div>
+</nav>
+<div class="pt-6 border-t border-outline-variant/20 space-y-1">
+<div class="flex items-center space-x-3 p-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-lg cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="contact_support">contact_support</span>
+<span class="text-xs font-semibold">Support</span>
+</div>
+<div class="flex items-center space-x-3 p-3 text-error hover:bg-error-container rounded-lg cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="logout">logout</span>
+<span class="text-xs font-semibold">Logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 px-12 pb-12 min-h-screen">
+<!-- Header & Stepper -->
+<header class="max-w-6xl mx-auto mb-12">
+<div class="flex items-end justify-between mb-10">
+<div>
+<h1 class="text-4xl font-extrabold text-on-surface tracking-tight mb-2">Campaign Builder</h1>
+<p class="text-on-surface-variant font-medium">Design and personalize your automated message flow.</p>
+</div>
+<div class="flex items-center space-x-2 text-primary font-bold text-sm bg-primary-container/20 px-4 py-2 rounded-full">
+<span class="material-symbols-outlined text-base" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>Pro Account</span>
+</div>
+</div>
+<!-- Stepper -->
+<div class="grid grid-cols-4 gap-4">
+<div class="relative">
+<div class="h-1.5 w-full bg-primary-container rounded-full mb-3"></div>
+<div class="flex items-center space-x-2 text-on-surface-variant opacity-60">
+<span class="text-xs font-black">01</span>
+<span class="text-sm font-bold">Setup</span>
+</div>
+</div>
+<div class="relative">
+<div class="h-1.5 w-full bg-primary-container rounded-full mb-3"></div>
+<div class="flex items-center space-x-2 text-on-surface-variant opacity-60">
+<span class="text-xs font-black">02</span>
+<span class="text-sm font-bold">Audience</span>
+</div>
+</div>
+<div class="relative">
+<div class="h-1.5 w-full bg-primary-container rounded-full mb-3 relative overflow-hidden">
+<div class="absolute inset-0 whatsapp-gradient"></div>
+</div>
+<div class="flex items-center space-x-2 text-primary">
+<span class="text-xs font-black">03</span>
+<span class="text-sm font-bold">Message</span>
+</div>
+</div>
+<div class="relative">
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full mb-3"></div>
+<div class="flex items-center space-x-2 text-on-surface-variant opacity-40">
+<span class="text-xs font-black">04</span>
+<span class="text-sm font-bold">Review</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Builder Grid -->
+<div class="max-w-6xl mx-auto grid grid-cols-12 gap-10">
+<!-- LEFT: Form Section -->
+<section class="col-span-7">
+<div class="bg-surface-container-lowest rounded-3xl p-10 shadow-[0px_20px_40px_rgba(20,29,36,0.04)]">
+<div class="mb-8">
+<label class="block text-xs font-black uppercase tracking-widest text-on-surface-variant mb-3">Select Approved WhatsApp Template</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold appearance-none focus:ring-2 focus:ring-primary/20 transition-all">
+<option>Welcome_Message_Premium_V2</option>
+<option>Order_Confirmation_Auto</option>
+<option>Abandoned_Cart_Reminder</option>
+</select>
+<span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-on-surface">Variable Mapping</h3>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase">2 Fields Required</span>
+</div>
+<!-- Variable 1 -->
+<div class="mb-6 group">
+<div class="flex items-center space-x-3 mb-2">
+<span class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container font-black text-xs">1</span>
+<label class="text-sm font-bold text-on-surface-variant">Mapping for {{1}}</label>
+</div>
+<div class="bg-surface-container-high rounded-2xl p-1 group-focus-within:bg-primary-container/20 transition-all">
+<select class="w-full bg-surface-container-lowest border-none rounded-xl py-3 px-4 text-sm font-medium focus:ring-0">
+<option>Contact Name</option>
+<option>Phone Number</option>
+<option>Custom Value</option>
+</select>
+</div>
+</div>
+<!-- Variable 2 -->
+<div class="group">
+<div class="flex items-center space-x-3 mb-2">
+<span class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center text-on-secondary-container font-black text-xs">2</span>
+<label class="text-sm font-bold text-on-surface-variant">Mapping for {{2}}</label>
+</div>
+<div class="bg-surface-container-high rounded-2xl p-1 group-focus-within:bg-primary-container/20 transition-all">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl py-3 px-4 text-sm font-medium focus:ring-0" placeholder="Enter custom text..." type="text" value="Premium Support Team"/>
+</div>
+</div>
+</div>
+<div class="pt-10 flex items-center justify-between">
+<button class="px-8 py-3 rounded-xl border-2 border-outline-variant/30 text-on-surface-variant font-bold text-sm hover:bg-surface-container-low transition-colors">
+                                Back
+                            </button>
+<button class="px-10 py-3 rounded-xl whatsapp-gradient text-white font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                Next Step
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- RIGHT: Preview Section -->
+<section class="col-span-5 flex flex-col items-center">
+<div class="w-full max-w-[320px] bg-slate-900 rounded-[3rem] p-3 shadow-2xl relative border-[6px] border-slate-800">
+<!-- Phone Notch -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-10"></div>
+<div class="bg-[#e5ddd5] w-full h-[520px] rounded-[2.2rem] overflow-hidden flex flex-col relative">
+<img alt="WhatsApp Wallpaper" class="absolute inset-0 w-full h-full object-cover opacity-20" data-alt="Abstract subtle pattern wallpaper for chat background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAs88E0Wekb7OCxNQDcHdBGrQqd6vpHPtV6yM32BUPxYFL-c8zLrscBgPiwHZ3SIM6AmltxUStEbxSruOv89Q3VmSQsoTeLuidJwekeladhs6Q2fDvxzp3_09ViG6NfryNzLsF0eRpBk5QWoAnYDe_YB4_vEKC0PZm3IlxcVqpLxROOz-f2XGLdUZQWN9HsZS8ZTed6bQUsV1h_n8gi4prgLddmyzPiOUl4N90JwoM18vB0yIEGBlcWL-V38IF-hY88oG8hdr8ywQ"/>
+<!-- Chat Header -->
+<div class="relative z-10 bg-[#075e54] text-white p-4 pt-8 flex items-center space-x-3">
+<span class="material-symbols-outlined text-xl" data-icon="arrow_back">arrow_back</span>
+<div class="w-8 h-8 rounded-full bg-white/20 overflow-hidden">
+<img alt="Royal300 Support" class="w-full h-full object-cover" data-alt="Company support representative avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo_gjxDbI6oPqMTX1iSrLqfgPU798AKxE8bF_N0xuQTP2q0aFx57M7zWTTbIL8gqHr1BMGlm49vrFoULeKLi3E84GVIZEMlKx-73n__z2Y1M0F211hO9htRYI38Pk_fTc2mS_awMfoWVMo5rdzTB67eNqcVtpMY0ZwPYeqQq_2HdN8eRClg3zkKGxN_yrMbDPlf-6u89LysXfpoIq3lyet2weJTWnvp9yf7Or5f8534EfH_0rrkBq4FTMGSMJnndpRsUY7EUfQ9_E"/>
+</div>
+<div>
+<h4 class="text-xs font-bold leading-none">Royal300 Official</h4>
+<span class="text-[9px] opacity-70">Online</span>
+</div>
+</div>
+<!-- Messages Area -->
+<div class="relative z-10 flex-1 p-4 space-y-4">
+<div class="flex justify-center">
+<span class="bg-white/60 text-[10px] font-bold text-slate-600 px-3 py-1 rounded-lg uppercase tracking-wider">Today</span>
+</div>
+<!-- Message Bubble -->
+<div class="flex justify-end">
+<div class="bg-[#dcf8c6] rounded-xl rounded-tr-none p-3 max-w-[85%] shadow-sm relative">
+<p class="text-[13px] text-slate-800 leading-relaxed mb-1">
+                                        Hi <span class="font-bold text-primary">Alex Johnson</span>, thank you for choosing Royal300! 👋<br/><br/>
+                                        Your account is now active. If you need assistance, contact our <span class="font-bold text-primary">Premium Support Team</span>.
+                                    </p>
+<div class="flex justify-end items-center space-x-1 opacity-50">
+<span class="text-[9px]">14:20</span>
+<span class="material-symbols-outlined text-[12px] text-blue-500" data-icon="done_all" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Input Mock -->
+<div class="relative z-10 p-2 flex items-center space-x-2">
+<div class="flex-1 bg-white rounded-full py-2 px-4 flex items-center space-x-2 shadow-sm">
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="mood">mood</span>
+<span class="text-xs text-slate-400 flex-1">Type a message</span>
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="attach_file">attach_file</span>
+<span class="material-symbols-outlined text-slate-400 text-lg" data-icon="photo_camera">photo_camera</span>
+</div>
+<div class="w-10 h-10 whatsapp-gradient rounded-full flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined text-lg" data-icon="mic" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+</div>
+</div>
+<p class="mt-6 text-xs font-bold text-on-surface-variant/60 flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span>
+<span>Live Preview Rendering</span>
+</p>
+</section>
+</div>
+</main>
+</body></html>

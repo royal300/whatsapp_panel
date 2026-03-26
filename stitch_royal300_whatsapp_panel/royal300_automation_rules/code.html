@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Automation Rules - Royal300</title>
+<!-- Google Fonts: Plus Jakarta Sans & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary-fixed-dim": "#72d8c8",
+                        "primary-fixed": "#66ff8e",
+                        "surface-variant": "#dae3ee",
+                        "surface-container-high": "#e0e9f3",
+                        "on-surface": "#141d24",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#293139",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6c7b6b",
+                        "on-secondary-container": "#006f64",
+                        "surface-bright": "#f6f9ff",
+                        "surface": "#f6f9ff",
+                        "surface-tint": "#006d2f",
+                        "surface-container-highest": "#dae3ee",
+                        "background": "#f6f9ff",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-primary-fixed-variant": "#005322",
+                        "on-secondary-fixed": "#00201c",
+                        "inverse-primary": "#3de273",
+                        "on-background": "#141d24",
+                        "primary": "#006d2f",
+                        "surface-dim": "#d2dbe5",
+                        "secondary-container": "#8cf1e1",
+                        "surface-container-low": "#ebf5ff",
+                        "inverse-on-surface": "#e9f2fc",
+                        "on-tertiary-fixed-variant": "#763319",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#78351b",
+                        "secondary": "#006b5f",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#bbcbb9",
+                        "on-primary-container": "#005523",
+                        "tertiary-container": "#ffa07e",
+                        "tertiary": "#93492e",
+                        "on-tertiary-fixed": "#380d00",
+                        "on-surface-variant": "#3c4a3d",
+                        "secondary-fixed": "#8ff4e3",
+                        "primary-container": "#25d366",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "surface-container": "#e6eff9",
+                        "primary-fixed-dim": "#3de273",
+                        "on-primary-fixed": "#002109",
+                        "tertiary-fixed": "#ffdbcf"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface-container-low text-on-surface min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-slate-50/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm shadow-emerald-900/5 flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-emerald-700 dark:text-emerald-400 tracking-tighter font-headline">Royal300</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-800/30 transition-colors px-3 py-1 rounded-xl" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 font-medium hover:bg-emerald-50 dark:hover:bg-emerald-800/30 transition-colors px-3 py-1 rounded-xl" href="#">Campaigns</a>
+<a class="text-emerald-700 dark:text-emerald-400 font-bold border-b-2 border-emerald-500 px-3 py-1" href="#">Automation</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 hover:bg-emerald-50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-600 hover:bg-emerald-50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-emerald-100 overflow-hidden ring-2 ring-emerald-500/20">
+<img alt="User Profile Avatar" data-alt="User avatar placeholder image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-IZM2PijCktlopA0A-qXQH5mdYc0tA19coLAewmsuoWbwl3ucnkWrCJQGHQEihm54xZt6AoittuoL2pJtIw202uaZKs-R1d2a29_YskuMxJXaff1-3_2_nsdjyV-PHMFmLtw8bHEjW1SL_Y8_qv-lMP3RaRiPSF0wQkm2lsZV2V1gVjbDJAkkuPcf8vPRFQea4foQhCXpvhyaiGUC7NsLyYUIkuYzY3UIUdM68PwKqY6AOHc7hcCvdKiFPU7Zubsv_J-SrB1cQ7s"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-r border-emerald-100/20 dark:border-emerald-800/20 shadow-[20px_0_40px_rgba(20,29,36,0.04)] hidden md:flex flex-col py-8 gap-y-2 pt-24">
+<div class="px-6 mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-black text-xl">R</div>
+<div>
+<h3 class="font-headline font-extrabold text-emerald-600 text-sm leading-tight">Royal300</h3>
+<p class="text-xs text-slate-500 font-medium">WhatsApp SaaS</p>
+</div>
+</div>
+</div>
+<div class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">contacts</span> Contacts
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">description</span> Templates
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">campaign</span> Campaigns
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">inbox</span> Team Inbox
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 font-bold border-r-4 border-emerald-500 font-['Plus_Jakarta_Sans'] text-sm rounded-l-xl" href="#">
+<span class="material-symbols-outlined">smart_toy</span> Automation
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">analytics</span> Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-emerald-600 hover:bg-emerald-50/50 dark:hover:bg-emerald-900/10 hover:pl-2 transition-all duration-300 ease-out font-['Plus_Jakarta_Sans'] text-sm font-medium rounded-xl" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+</div>
+<div class="px-4 mt-auto">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-white py-3 px-4 rounded-xl font-headline font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span> New Campaign
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-12 md:pl-72 pr-6 min-h-screen">
+<div class="max-w-6xl mx-auto space-y-8">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="text-4xl font-headline font-extrabold tracking-tight text-on-surface">Automation Rules</h1>
+<p class="text-on-surface-variant mt-2 font-medium">Manage your automated workflows and auto-replies.</p>
+</div>
+<button class="bg-primary-container text-on-primary-container hover:shadow-xl hover:shadow-emerald-500/10 px-6 py-3 rounded-xl font-headline font-bold flex items-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined">add_circle</span>
+                    New Rule
+                </button>
+</header>
+<!-- Rules Grid -->
+<div class="grid grid-cols-1 gap-4">
+<!-- Rule Card 1 -->
+<div class="group bg-surface-container-lowest p-6 rounded-full shadow-[0px_20px_40px_rgba(20,29,36,0.04)] border border-outline-variant/10 hover:border-primary/20 transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-5 flex-1 w-full">
+<div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Out of Office Reply</h3>
+<div class="flex flex-wrap gap-4 mt-1">
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">bolt</span> Trigger: Message received after 6 PM
+                                </span>
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">reply</span> Action: Send "Away" template
+                                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold text-on-surface-variant">Active</span>
+<!-- Toggle Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Rule Card 2 -->
+<div class="group bg-surface-container-lowest p-6 rounded-full shadow-[0px_20px_40px_rgba(20,29,36,0.04)] border border-outline-variant/10 hover:border-primary/20 transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-5 flex-1 w-full">
+<div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">New Lead Assign</h3>
+<div class="flex flex-wrap gap-4 mt-1">
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">key</span> Trigger: Message contains: "pricing"
+                                </span>
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> Action: Assign to Sales Team
+                                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold text-on-surface-variant">Active</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Rule Card 3 -->
+<div class="group bg-surface-container-lowest p-6 rounded-full shadow-[0px_20px_40px_rgba(20,29,36,0.04)] border border-outline-variant/10 hover:border-primary/20 transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-5 flex-1 w-full">
+<div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">label</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Feedback Tagger</h3>
+<div class="flex flex-wrap gap-4 mt-1">
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">search</span> Trigger: Keyword "satisfied" or "happy"
+                                </span>
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">sell</span> Action: Add tag "Positive"
+                                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold text-on-surface-variant">Inactive</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Rule Card 4 -->
+<div class="group bg-surface-container-lowest p-6 rounded-full shadow-[0px_20px_40px_rgba(20,29,36,0.04)] border border-outline-variant/10 hover:border-primary/20 transition-all flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-5 flex-1 w-full">
+<div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<div class="flex-1">
+<h3 class="font-headline font-bold text-lg text-on-surface">Urgent Support Escalation</h3>
+<div class="flex flex-wrap gap-4 mt-1">
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">priority_high</span> Trigger: Contains "unresolved" or "complaint"
+                                </span>
+<span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">notification_important</span> Action: Alert Support Manager
+                                </span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center gap-3">
+<span class="text-sm font-semibold text-on-surface-variant">Active</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Info Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="col-span-1 md:col-span-2 bg-gradient-to-br from-emerald-600 to-emerald-800 p-8 rounded-full text-white shadow-xl shadow-emerald-900/10 flex flex-col justify-center">
+<h4 class="font-headline font-bold text-2xl">Smart Reply AI</h4>
+<p class="mt-2 opacity-90 text-sm leading-relaxed max-w-md">Our AI engine analyzes incoming messages to automatically suggest the best rules. You currently have 3 suggested optimizations available in your dashboard.</p>
+<div class="mt-6 flex gap-4">
+<button class="bg-white/20 backdrop-blur-md px-5 py-2 rounded-xl font-bold text-sm hover:bg-white/30 transition-all">View Suggestions</button>
+</div>
+</div>
+<div class="bg-surface-container-highest p-8 rounded-full flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-4xl text-primary mb-2">bolt</span>
+<h4 class="font-headline font-bold text-lg text-on-surface">Fast Execution</h4>
+<p class="text-sm text-on-surface-variant">Average rule execution time: 0.2s</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-white/80 backdrop-blur-xl border-t border-emerald-100/20 py-3 flex justify-around items-center z-50">
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">inbox</span>
+<span class="text-[10px] font-medium">Inbox</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-emerald-600">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="text-[10px] font-bold">Automation</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Royal300 - Flow Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary-fixed": "#66ff8e",
+                "on-secondary-fixed-variant": "#005047",
+                "on-error-container": "#93000a",
+                "surface-tint": "#006d2f",
+                "on-tertiary-fixed": "#380d00",
+                "on-tertiary-fixed-variant": "#763319",
+                "primary-container": "#25d366",
+                "primary-fixed-dim": "#3de273",
+                "surface-container-low": "#ebf5ff",
+                "surface": "#f6f9ff",
+                "secondary": "#006b5f",
+                "background": "#f6f9ff",
+                "surface-container-highest": "#dae3ee",
+                "tertiary-container": "#ffa07e",
+                "secondary-container": "#8cf1e1",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#293139",
+                "outline": "#6c7b6b",
+                "on-tertiary-container": "#78351b",
+                "on-tertiary": "#ffffff",
+                "error-container": "#ffdad6",
+                "inverse-primary": "#3de273",
+                "surface-dim": "#d2dbe5",
+                "surface-bright": "#f6f9ff",
+                "surface-container-high": "#e0e9f3",
+                "tertiary-fixed-dim": "#ffb59b",
+                "on-primary-container": "#005523",
+                "inverse-on-surface": "#e9f2fc",
+                "tertiary": "#93492e",
+                "secondary-fixed-dim": "#72d8c8",
+                "on-primary-fixed": "#002109",
+                "on-primary-fixed-variant": "#005322",
+                "on-primary": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "on-background": "#141d24",
+                "surface-variant": "#dae3ee",
+                "on-secondary-fixed": "#00201c",
+                "error": "#ba1a1a",
+                "surface-container": "#e6eff9",
+                "secondary-fixed": "#8ff4e3",
+                "primary": "#006d2f",
+                "on-secondary-container": "#006f64",
+                "tertiary-fixed": "#ffdbcf",
+                "on-surface-variant": "#3c4a3d",
+                "outline-variant": "#bbcbb9",
+                "on-surface": "#141d24",
+                "on-error": "#ffffff"
+              },
+              fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .canvas-dot-grid {
+            background-image: radial-gradient(#bbcbb9 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-background antialiased overflow-hidden">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-40 bg-[#f6f9ff]/70 backdrop-blur-xl flex justify-between items-center px-8 py-3 shadow-[0px_20px_40px_rgba(20,29,36,0.06)] font-['Plus_Jakarta_Sans']">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-bold tracking-tight text-[#006d2f]">Royal300</h1>
+<nav class="hidden md:flex gap-6">
+<a class="text-[#3c4a3d] font-medium hover:bg-[#ebf5ff] transition-colors duration-200 px-3 py-1 rounded-lg" href="#">Home</a>
+<a class="text-[#3c4a3d] font-medium hover:bg-[#ebf5ff] transition-colors duration-200 px-3 py-1 rounded-lg" href="#">Analytics</a>
+<a class="text-[#006d2f] font-bold border-b-2 border-[#006d2f] px-1 py-1" href="#">Flow Builder</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-highest rounded-full pl-10 pr-4 py-2 border-none focus:ring-2 focus:ring-primary/40 text-sm w-64" placeholder="Search flows..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-[#3c4a3d] p-2 hover:bg-[#ebf5ff] rounded-full transition-all">notifications</button>
+<button class="material-symbols-outlined text-[#3c4a3d] p-2 hover:bg-[#ebf5ff] rounded-full transition-all">help</button>
+<img alt="User Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" data-alt="User profile avatar circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT1gGuyofGkO5oYj2ki45-QXUtOhcwR_3VjPXX8tdt827rhkLzJm03LFthVPSTqjV6NJhHquXUWybCFwdyW1Zu1dQfxrPAiq22twqwI8HcLyLya-HVWsG8IY9S_71MMqWIIWNgh96nwEPdas4FnFsJU9pOXhqBzQlR9rRyNM2GlTf3rgQbPCfnt2OiI2B1A8wYl1AgD3F09Tv0Na3ZY10GurTtoJSgYOx28nfia0cA7u3CPT2xbZV2EwzPyGdg-ojj79eVzj_Pv6E"/>
+</div>
+</header>
+<div class="flex h-[calc(100vh-64px)] overflow-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-72 flex flex-col p-6 gap-y-4 bg-[#f6f9ff]/80 backdrop-blur-2xl shadow-xl z-50 font-['Inter'] text-sm tracking-wide">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+</div>
+<div>
+<h2 class="font-headline font-extrabold text-[#006d2f] text-lg leading-tight">Royal300</h2>
+<p class="text-on-surface-variant text-xs font-medium uppercase tracking-widest">WhatsApp SaaS</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+                    Contacts
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">description</span>
+                    Templates
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">campaign</span>
+                    Campaigns
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-white text-[#006d2f] rounded-xl shadow-sm font-semibold hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_tree</span>
+                    Flow Builder
+                </a>
+</nav>
+<div class="pt-6 border-t border-outline-variant/20 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#3c4a3d] hover:bg-[#ebf5ff] rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-error/80 hover:bg-error-container/30 rounded-xl hover:translate-x-1 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+                    Logout
+                </a>
+</div>
+</aside>
+<!-- Main Flow Builder Canvas -->
+<main class="flex-grow flex flex-col relative bg-surface-container-low overflow-hidden">
+<!-- Canvas Toolbar -->
+<div class="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4 bg-surface-container-lowest/80 backdrop-blur-md px-6 py-3 rounded-full shadow-[0px_20px_40px_rgba(20,29,36,0.06)]">
+<div class="flex items-center gap-2 border-r border-outline-variant/30 pr-4">
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant transition-colors"><span class="material-symbols-outlined">zoom_in</span></button>
+<span class="text-xs font-bold text-on-surface-variant">100%</span>
+<button class="p-2 hover:bg-surface-container rounded-full text-on-surface-variant transition-colors"><span class="material-symbols-outlined">zoom_out</span></button>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-5 py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-full transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">play_arrow</span> Test Flow
+                    </button>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-primary-container/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">publish</span> Publish
+                    </button>
+</div>
+</div>
+<!-- Canvas Area -->
+<div class="flex-grow relative overflow-auto canvas-dot-grid">
+<!-- SVG Connections Layer -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 5;">
+<!-- Connection 1 to 2 -->
+<path d="M 320 280 C 400 280, 420 280, 500 280" fill="none" stroke="#bbcbb9" stroke-dasharray="4" stroke-width="2"></path>
+<circle cx="500" cy="280" fill="#006d2f" r="4"></circle>
+<!-- Connection 2 to 3 -->
+<path d="M 750 280 C 850 280, 870 280, 950 280" fill="none" stroke="#bbcbb9" stroke-dasharray="4" stroke-width="2"></path>
+<circle cx="950" cy="280" fill="#006d2f" r="4"></circle>
+</svg>
+<!-- Nodes Container -->
+<div class="relative min-w-[1200px] min-h-[800px] flex items-center px-24">
+<!-- Node 1: Trigger -->
+<div class="absolute left-64 top-[230px] w-64 bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(20,29,36,0.04)] overflow-hidden z-10 transition-transform hover:scale-[1.02]">
+<div class="bg-primary px-4 py-2 flex items-center justify-between">
+<span class="text-[10px] font-extrabold text-primary-fixed tracking-widest uppercase">Trigger</span>
+<span class="material-symbols-outlined text-white text-sm">bolt</span>
+</div>
+<div class="p-5">
+<h3 class="font-headline font-bold text-on-surface text-sm mb-1">Keyword (Hello)</h3>
+<p class="text-on-surface-variant text-xs">Customer says "Hello" or "Hi"</p>
+</div>
+<div class="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-primary border-4 border-surface-container-low rounded-full"></div>
+</div>
+<!-- Node 2: Condition -->
+<div class="absolute left-[500px] top-[210px] w-64 bg-surface-container-lowest rounded-2xl shadow-[0px_10px_30px_rgba(20,29,36,0.04)] overflow-hidden z-10 transition-transform hover:scale-[1.02]">
+<div class="bg-secondary px-4 py-2 flex items-center justify-between">
+<span class="text-[10px] font-extrabold text-secondary-container tracking-widest uppercase">Condition</span>
+<span class="material-symbols-outlined text-white text-sm">account_tree</span>
+</div>
+<div class="p-5">
+<h3 class="font-headline font-bold text-on-surface text-sm mb-1">Existing User?</h3>
+<p class="text-on-surface-variant text-xs">Check database for phone number match</p>
+</div>
+<div class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-outline-variant border-4 border-surface-container-low rounded-full"></div>
+<div class="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-secondary border-4 border-surface-container-low rounded-full"></div>
+</div>
+<!-- Node 3: Action (Active) -->
+<div class="absolute left-[950px] top-[220px] w-72 bg-surface-container-lowest rounded-2xl shadow-[0px_20px_50px_rgba(0,109,47,0.1)] border-2 border-primary-container z-20 transition-transform hover:scale-[1.02]">
+<div class="bg-primary-container px-4 py-2 flex items-center justify-between">
+<span class="text-[10px] font-extrabold text-on-primary-container tracking-widest uppercase">Action</span>
+<span class="material-symbols-outlined text-on-primary-container text-sm" style="font-variation-settings: 'FILL' 1;">send</span>
+</div>
+<div class="p-5">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary text-lg">description</span>
+<h3 class="font-headline font-bold text-on-surface text-sm">Send Template</h3>
+</div>
+<div class="bg-surface-container-low p-3 rounded-xl border border-primary/10">
+<p class="text-xs text-on-surface leading-relaxed">Welcome back, {{name}}! How can I assist you today?</p>
+</div>
+</div>
+<div class="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-primary-container border-4 border-surface-container-low rounded-full shadow-lg"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- Properties Panel -->
+<aside class="w-[420px] h-full bg-surface-container-low flex flex-col shadow-[-10px_0px_30px_rgba(20,29,36,0.03)] z-40 border-l border-outline-variant/10">
+<div class="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+<div>
+<h3 class="font-headline font-bold text-on-surface">Action Properties</h3>
+<p class="text-xs text-on-surface-variant">Send Template Node</p>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container p-2 rounded-full">close</button>
+</div>
+<div class="p-6 flex flex-col gap-6 overflow-y-auto h-full">
+<!-- Field: Message Template -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Select Template</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest rounded-xl border-none p-3 pr-10 text-sm appearance-none focus:ring-2 focus:ring-primary/20 shadow-sm">
+<option>welcome_back_message</option>
+<option>order_confirmation</option>
+<option>payment_reminder</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">unfold_more</span>
+</div>
+</div>
+<!-- Field: Message Text -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Message Preview</label>
+<textarea class="w-full bg-surface-container-highest/50 rounded-xl border-none p-4 text-sm focus:ring-2 focus:ring-primary/20 shadow-sm min-h-[120px]" placeholder="Enter message text...">Welcome back, {{name}}! How can I assist you today? We have some new items in stock since your last visit.</textarea>
+</div>
+<!-- Field: Buttons -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between mb-1">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Action Buttons</label>
+<button class="text-primary text-xs font-bold hover:underline">+ Add Button</button>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between bg-surface-container-lowest p-3 rounded-xl shadow-sm group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">smart_button</span>
+<span class="text-sm font-medium">Browse Catalog</span>
+</div>
+<button class="material-symbols-outlined text-error/40 group-hover:text-error text-sm">delete</button>
+</div>
+<div class="flex items-center justify-between bg-surface-container-lowest p-3 rounded-xl shadow-sm group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">support_agent</span>
+<span class="text-sm font-medium">Talk to Human</span>
+</div>
+<button class="material-symbols-outlined text-error/40 group-hover:text-error text-sm">delete</button>
+</div>
+</div>
+</div>
+<!-- Field: Quick Replies -->
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Quick Replies</label>
+<div class="flex flex-wrap gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+                            Not now <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5">
+                            Pricing <span class="material-symbols-outlined text-xs cursor-pointer">close</span>
+</span>
+<input class="bg-transparent border-none p-1 text-xs w-20 focus:ring-0" placeholder="Add..." type="text"/>
+</div>
+</div>
+</div>
+<div class="p-6 mt-auto bg-surface-container-high/50 border-t border-outline-variant/20">
+<button class="w-full bg-primary text-white py-3 rounded-xl font-bold shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-95">Save Changes</button>
+</div>
+</aside>
+</div>
+</body></html>

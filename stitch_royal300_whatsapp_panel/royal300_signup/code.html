@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sign Up | Royal300</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-highest": "#dae3ee",
+              "on-primary-container": "#005523",
+              "on-error": "#ffffff",
+              "surface-variant": "#dae3ee",
+              "outline-variant": "#bbcbb9",
+              "secondary": "#006b5f",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "on-secondary-container": "#006f64",
+              "secondary-container": "#8cf1e1",
+              "tertiary-fixed": "#ffdbcf",
+              "error": "#ba1a1a",
+              "on-primary-fixed": "#002109",
+              "on-secondary-fixed-variant": "#005047",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#f6f9ff",
+              "on-primary-fixed-variant": "#005322",
+              "on-tertiary-fixed": "#380d00",
+              "on-primary": "#ffffff",
+              "inverse-surface": "#293139",
+              "secondary-fixed": "#8ff4e3",
+              "inverse-primary": "#3de273",
+              "on-background": "#141d24",
+              "surface-tint": "#006d2f",
+              "primary": "#006d2f",
+              "inverse-on-surface": "#e9f2fc",
+              "tertiary-fixed-dim": "#ffb59b",
+              "surface-container-high": "#e0e9f3",
+              "tertiary": "#93492e",
+              "tertiary-container": "#ffa07e",
+              "outline": "#6c7b6b",
+              "surface-container": "#e6eff9",
+              "on-tertiary-fixed-variant": "#763319",
+              "primary-container": "#25d366",
+              "primary-fixed-dim": "#3de273",
+              "surface-dim": "#d2dbe5",
+              "surface-bright": "#f6f9ff",
+              "on-tertiary-container": "#78351b",
+              "error-container": "#ffdad6",
+              "primary-fixed": "#66ff8e",
+              "on-secondary-fixed": "#00201c",
+              "surface-container-low": "#ebf5ff",
+              "on-error-container": "#93000a",
+              "background": "#f6f9ff",
+              "on-surface-variant": "#3c4a3d",
+              "secondary-fixed-dim": "#72d8c8",
+              "on-surface": "#141d24"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-sidebar {
+            background: linear-gradient(135deg, #128C7E 0%, #006d2f 100%);
+        }
+        .input-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar: Suppressed per shell visibility rule (Signup is Transactional/Focused) -->
+<!-- However, providing a minimal logo anchor for brand recognition -->
+<nav class="fixed top-0 left-0 w-full z-50 px-8 py-6 flex items-center justify-between pointer-events-none">
+<div class="text-2xl font-black tracking-tighter text-on-surface pointer-events-auto">Royal300</div>
+<div class="hidden md:block pointer-events-auto">
+<span class="text-sm font-medium text-on-surface-variant mr-2">Already have an account?</span>
+<a class="text-sm font-bold text-primary hover:opacity-80 transition-all" href="#">Log In</a>
+</div>
+</nav>
+<main class="min-h-screen flex flex-col md:flex-row">
+<!-- Left Side: Professional Sidebar -->
+<section class="hidden md:flex md:w-5/12 lg:w-1/2 glass-sidebar relative overflow-hidden flex-col justify-center px-12 lg:px-24 text-white">
+<!-- Decorative Elements -->
+<div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-primary-container/20 rounded-full blur-3xl"></div>
+<div class="absolute bottom-[-5%] right-[-5%] w-96 h-96 bg-secondary-container/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 space-y-8">
+<div class="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wider uppercase">
+                    Platform Excellence
+                </div>
+<h1 class="font-headline text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                    The world's most powerful WhatsApp API panel
+                </h1>
+<p class="text-xl text-white/80 max-w-lg leading-relaxed">
+                    Join 5,000+ businesses automating their communication and scaling customer engagement with Royal300.
+                </p>
+<div class="pt-12 space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Official Meta API</h3>
+<p class="text-sm text-white/70">Seamless integration with official WhatsApp business cloud.</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Instant Automation</h3>
+<p class="text-sm text-white/70">Deploy chatbots and auto-replies in under 5 minutes.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Dashboard Preview Fragment -->
+<div class="absolute bottom-12 right-0 w-3/4 translate-x-12 opacity-40 hover:opacity-60 transition-opacity duration-700">
+<img alt="SaaS Dashboard Interface" class="rounded-tl-2xl shadow-2xl border-l border-t border-white/20" data-alt="Modern analytics dashboard interface showing charts and stats" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDK78cNQf68eQfF3nNc2HNURzMy1c2AmbTFZCfAn8cMF3WYykBmwKuIDOIrrO5r4Fe9THu-9YLWgaQpm9VoCkNcvJ76ERKK6zqwh-cKYRLO8FcZQdkA7Asar0WU3a5SaR7oHKfq0K9R4tXtGLDOU-RPAiFRHcEIMNpmMGz7WZBYXCeUKgI4SB3KwwEmhUmueeXcunGnq10gfvYk4XCnAFv1aVW16C6iobIPSyJdiazjr0G_vfOLX7RsPL2rSWGIj67NaHHUPxnbmAw"/>
+</div>
+</section>
+<!-- Right Side: Signup Form -->
+<section class="flex-1 flex flex-col justify-center items-center px-6 py-24 md:px-12 lg:px-24 bg-surface">
+<div class="w-full max-w-md space-y-10">
+<!-- Mobile Logo -->
+<div class="md:hidden flex flex-col items-center mb-8">
+<div class="text-3xl font-black tracking-tighter text-on-surface">Royal300</div>
+</div>
+<div class="space-y-3">
+<h2 class="font-headline text-3xl font-extrabold text-on-surface tracking-tight">Create Your Account</h2>
+<p class="text-on-surface-variant font-medium">Start your 14-day free trial. No credit card required.</p>
+</div>
+<!-- Google SSO Button -->
+<button class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-lowest border border-outline-variant/20 rounded-xl font-semibold text-on-surface hover:bg-surface-container transition-all active:scale-95 shadow-sm">
+<img alt="Google Logo" class="w-5 h-5" data-alt="Google colorful G logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtra6b5DFyQzjBLbJwWk_qOGx8S0yTY4B-OEVvrbLVxY8OJEOBgF0_q5C2erxPxvOB-RhwWnYN2ekPfSpXdLqfWZAqHN2Z_gPALtDVwcWEKrwneWEABmWMlrgQaLNlOfgCZkkS9SKIWJ1c4hZaqvwLVd_tycvhCOYvkolIW2WIFq2igJpxL4X1QJR9aZhVCw30cXjUzvQ8KqnOZELt-UDaxZEW0wT8NGdJVOLpwLxiPcAtNTMEIOzJiO8uuynNSLW8MhhN9NaC6Jo"/>
+<span>Continue with Google</span>
+</button>
+<div class="relative py-2">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline-variant/20"></div>
+</div>
+<div class="relative flex justify-center text-xs uppercase">
+<span class="bg-surface px-4 text-on-surface-variant font-bold tracking-widest">Or sign up with email</span>
+</div>
+</div>
+<form class="space-y-5">
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="name">Full Name</label>
+<input class="w-full bg-surface-container-highest/50 border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest input-transition outline-none" id="name" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="email">Work Email</label>
+<input class="w-full bg-surface-container-highest/50 border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest input-transition outline-none" id="email" placeholder="name@company.com" type="email"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" for="password">Password</label>
+<div class="relative">
+<input class="w-full bg-surface-container-highest/50 border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest input-transition outline-none" id="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2 py-2">
+<input class="w-4 h-4 rounded text-primary focus:ring-primary-container border-outline-variant" id="terms" type="checkbox"/>
+<label class="text-sm text-on-surface-variant" for="terms">
+                            I agree to the <a class="text-primary font-semibold hover:underline" href="#">Terms of Service</a> and <a class="text-primary font-semibold hover:underline" href="#">Privacy Policy</a>.
+                        </label>
+</div>
+<button class="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl shadow-[0px_10px_20px_rgba(37,211,102,0.2)] hover:shadow-[0px_15px_30px_rgba(37,211,102,0.3)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300" type="submit">
+                        Create My Account
+                    </button>
+</form>
+<p class="text-center text-sm text-on-surface-variant md:hidden">
+                    Already have an account? <a class="text-primary font-bold" href="#">Log In</a>
+</p>
+</div>
+</section>
+</main>
+<!-- Footer Component as per JSON -->
+<footer class="w-full border-t border-[#bbcbb9]/20 bg-[#f6f9ff] dark:bg-[#141d24] tonal-shift pt-12 pb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-12 max-w-7xl mx-auto">
+<div class="flex flex-col gap-4">
+<span class="font-headline text-xl font-extrabold text-[#141d24] dark:text-[#ffffff]">Royal300</span>
+<p class="font-['Inter'] text-xs text-[#3c4a3d] dark:text-[#bbcbb9]">© 2024 Royal300 WhatsApp Panel. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap gap-x-8 gap-y-4 md:justify-end">
+<a class="font-['Inter'] text-xs text-[#3c4a3d] dark:text-[#bbcbb9] hover:text-[#25d366] transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-xs text-[#3c4a3d] dark:text-[#bbcbb9] hover:text-[#25d366] transition-colors" href="#">Terms of Service</a>
+<a class="font-['Inter'] text-xs text-[#3c4a3d] dark:text-[#bbcbb9] hover:text-[#25d366] transition-colors" href="#">Contact Support</a>
+<a class="font-['Inter'] text-xs text-[#3c4a3d] dark:text-[#bbcbb9] hover:text-[#25d366] transition-colors" href="#">API Docs</a>
+</div>
+</div>
+</footer>
+</body></html>

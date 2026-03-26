@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Royal300 - WhatsApp SaaS Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-on-surface": "#e9f2fc",
+                        "primary": "#006d2f",
+                        "surface-tint": "#006d2f",
+                        "on-surface-variant": "#3c4a3d",
+                        "background": "#f6f9ff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#72d8c8",
+                        "surface-bright": "#f6f9ff",
+                        "on-secondary-container": "#006f64",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcf",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-error": "#ffffff",
+                        "surface-container": "#e6eff9",
+                        "secondary": "#006b5f",
+                        "secondary-fixed": "#8ff4e3",
+                        "on-tertiary-container": "#78351b",
+                        "primary-container": "#25d366",
+                        "surface-variant": "#dae3ee",
+                        "on-primary-fixed": "#002109",
+                        "on-primary-container": "#005523",
+                        "secondary-container": "#8cf1e1",
+                        "tertiary-container": "#ffa07e",
+                        "inverse-primary": "#3de273",
+                        "primary-fixed": "#66ff8e",
+                        "on-primary-fixed-variant": "#005322",
+                        "primary-fixed-dim": "#3de273",
+                        "on-tertiary-fixed-variant": "#763319",
+                        "outline": "#6c7b6b",
+                        "surface-container-high": "#e0e9f3",
+                        "surface": "#f6f9ff",
+                        "on-tertiary-fixed": "#380d00",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#93492e",
+                        "surface-dim": "#d2dbe5",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#bbcbb9",
+                        "inverse-surface": "#293139",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#141d24",
+                        "surface-container-low": "#ebf5ff",
+                        "surface-container-highest": "#dae3ee",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "on-surface": "#141d24"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-sidebar { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 fixed left-0 top-0 z-50 glass-sidebar border-r border-slate-200/10 shadow-xl flex flex-col py-6 gap-2">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#006d2f] to-[#25d366] flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+</div>
+<div>
+<h1 class="text-lg font-bold bg-gradient-to-br from-[#006d2f] to-[#25d366] bg-clip-text text-transparent leading-none">Royal300</h1>
+<p class="text-[10px] font-bold text-on-surface-variant tracking-widest uppercase mt-1">WhatsApp SaaS</p>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<!-- Dashboard Active -->
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium bg-emerald-50/50 text-emerald-700 border-r-4 border-emerald-500 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">contacts</span>
+                Contacts
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">description</span>
+                Templates
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">campaign</span>
+                Campaigns
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">inbox</span>
+                Team Inbox
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">smart_toy</span>
+                Automation
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">analytics</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 font-['Plus_Jakarta_Sans'] text-[14px] font-medium text-slate-500 hover:bg-slate-50 hover:translate-x-1 transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20">
+<p class="text-xs font-semibold text-primary mb-2">Pro Plan Active</p>
+<div class="w-full bg-slate-200 h-1.5 rounded-full mb-3">
+<div class="bg-primary h-1.5 rounded-full w-[85%]"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant leading-tight">85% of monthly messages used.</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 min-h-screen relative">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 right-0 left-64 z-40 bg-white/70 backdrop-blur-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border-b border-slate-200/20">
+<div class="flex justify-between items-center h-16 px-8 w-full">
+<div class="flex items-center flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+<input class="w-full bg-surface-container-highest border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all font-body" placeholder="Search conversations or campaigns..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100/50 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-sm font-bold text-slate-900 leading-none">Alex Rivera</p>
+<p class="text-[10px] text-emerald-600 font-semibold mt-1">Admin</p>
+</div>
+<div class="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-slate-100">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="Close up of professional male headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApsBdPx4-yrd_g7ZtldZCXJnO6VxvUL5bY82naG66Qzlo56tq7F14Y0NUWAdvVy0z9AsafhiSnxPAeXVvNeH56h0NLRpUBO-2zHsAbzcxe2tH2FWqOMxbvX8MxilCSrBPZHPttSnixmy21_XnANGT9oioliTZ-D4DSD1_VmTq52d98CcHJ-K1EA46n3ubKcUULI5_LbAzwN5x0hvY7oaHfn3hFYTtQgxucNmrTYi0c3OInWOSWiXZ5BL-gEF7o9h5qG_RNszD18lU"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="pt-24 pb-12 px-8">
+<div class="mb-10 flex justify-between items-end">
+<div>
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight font-headline">Operations Overview</h2>
+<p class="text-on-surface-variant mt-1">Real-time performance across your WhatsApp channels.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-surface-container-low text-on-surface-variant rounded-xl font-semibold text-sm hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+                        Last 7 Days
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-white rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+<span class="material-symbols-outlined text-lg">add</span>
+                        New Campaign
+                    </button>
+</div>
+</div>
+<!-- Metric Cards Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</div>
+<span class="flex items-center text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                            +12%
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Total Messages Sent</p>
+<h3 class="text-3xl font-extrabold text-on-surface mt-1">1.2M</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">task_alt</span>
+</div>
+<span class="flex items-center text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                            +2%
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Delivered Rate</p>
+<h3 class="text-3xl font-extrabold text-on-surface mt-1">98.4%</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</div>
+<span class="flex items-center text-error text-xs font-bold bg-error-container/30 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-sm mr-1">trending_down</span>
+                            -1.5%
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Read Rate</p>
+<h3 class="text-3xl font-extrabold text-on-surface mt-1">82.1%</h3>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<span class="flex items-center text-slate-500 text-xs font-bold bg-slate-100 px-2 py-1 rounded-full">
+                            Steady
+                        </span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium">Active Agents</p>
+<h3 class="text-3xl font-extrabold text-on-surface mt-1">24</h3>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Message Volume Chart -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-10">
+<h3 class="text-xl font-bold font-headline">Message Volume (Last 7 Days)</h3>
+<div class="flex gap-2">
+<span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-100">Sent</span>
+<span class="inline-flex items-center px-3 py-1 bg-slate-50 text-slate-500 text-xs font-bold rounded-lg border border-slate-100">Incoming</span>
+</div>
+</div>
+<div class="h-64 relative flex items-end gap-4 overflow-hidden pt-10">
+<!-- Abstract Area Chart Representation -->
+<div class="absolute inset-0 flex items-end opacity-20">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0 80 Q 15 40, 30 60 T 60 20 T 90 40 T 100 30 L 100 100 L 0 100 Z" fill="url(#grad1)"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:rgb(37, 211, 102);stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgb(37, 211, 102);stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 60%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">MON</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 75%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">TUE</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 55%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">WED</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 90%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">THU</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 65%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">FRI</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 40%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">SAT</span>
+</div>
+<div class="flex-1 flex flex-col justify-end items-center group cursor-pointer">
+<div class="w-full bg-emerald-500/20 group-hover:bg-emerald-500/40 rounded-t-lg transition-all" style="height: 45%"></div>
+<span class="text-[10px] text-slate-400 font-bold mt-3">SUN</span>
+</div>
+</div>
+</div>
+<!-- Recent Broadcasts Table -->
+<div class="bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xl font-bold font-headline">Recent Broadcasts</h3>
+<a class="text-xs font-bold text-primary hover:underline" href="#">View All</a>
+</div>
+<div class="space-y-4">
+<!-- Campaign Row 1 -->
+<div class="p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">Holiday Sale 2024</h4>
+<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase">Sent</span>
+</div>
+<div class="flex justify-between items-center text-[11px] text-slate-500 font-medium">
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">groups</span> 45.2k</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bolt</span> 88% Open</span>
+</div>
+<span>2h ago</span>
+</div>
+</div>
+<!-- Campaign Row 2 -->
+<div class="p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">Welcome Onboarding</h4>
+<span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded uppercase">Scheduled</span>
+</div>
+<div class="flex justify-between items-center text-[11px] text-slate-500 font-medium">
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">groups</span> 1.2k</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bolt</span> -- Open</span>
+</div>
+<span>In 4h</span>
+</div>
+</div>
+<!-- Campaign Row 3 -->
+<div class="p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">Flash Sale Alert</h4>
+<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase">Sent</span>
+</div>
+<div class="flex justify-between items-center text-[11px] text-slate-500 font-medium">
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">groups</span> 120k</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bolt</span> 94% Open</span>
+</div>
+<span>Yesterday</span>
+</div>
+</div>
+<!-- Campaign Row 4 -->
+<div class="p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<h4 class="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">Subscription Renewal</h4>
+<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded uppercase">Sent</span>
+</div>
+<div class="flex justify-between items-center text-[11px] text-slate-500 font-medium">
+<div class="flex gap-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">groups</span> 3.4k</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bolt</span> 76% Open</span>
+</div>
+<span>2 days ago</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Agent Table Section (Custom Addition for Depth) -->
+<div class="mt-8 bg-surface-container-lowest p-8 rounded-2xl shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/5">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-bold font-headline">Active Agent Performance</h3>
+<div class="flex items-center gap-4">
+<span class="text-xs text-on-surface-variant font-medium">Sort by: Resolution Time</span>
+<button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined text-sm">filter_list</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full">
+<thead>
+<tr class="text-left border-b border-outline-variant/10">
+<th class="pb-4 font-bold text-on-surface-variant text-xs uppercase tracking-wider">Agent Name</th>
+<th class="pb-4 font-bold text-on-surface-variant text-xs uppercase tracking-wider">Status</th>
+<th class="pb-4 font-bold text-on-surface-variant text-xs uppercase tracking-wider">Active Chats</th>
+<th class="pb-4 font-bold text-on-surface-variant text-xs uppercase tracking-wider">Resolution Rate</th>
+<th class="pb-4 font-bold text-on-surface-variant text-xs uppercase tracking-wider">Avg Response</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200">
+<img alt="Agent" class="w-full h-full object-cover rounded-full" data-alt="Portrait of smiling customer support agent" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpdveaiswndMxWQAdCyMp-AZBqyN9taQSOSnwFbipBtEUTCHS3xxowfG6PcdSoIyNUel9Jpzrm4We0J04S-dk5pNJHt_U1Pv7Ei8Q0ZW8UHwTKOZzqwoCL96rR22cbDL2MdaQAiF6rL7O05SdOnXZ5ZZt_CgTXy5a1bT5Igg4Vfqswu9UWCM1XFFAPaBj0FApN1IdkP6P2Wkf7gk6tNV86y31kZ4miODH3p5Y4Hw0GvUORUCjyXJdBcuu6hbI2C8qLC4Y_wwR2mb0"/>
+</div>
+<span class="text-sm font-bold text-on-surface">Jordan Smith</span>
+</div>
+</td>
+<td class="py-5">
+<span class="flex items-center gap-1.5 text-emerald-600 text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Available
+                                    </span>
+</td>
+<td class="py-5 text-sm font-semibold text-on-surface">12</td>
+<td class="py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 max-w-[100px] h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 92%"></div>
+</div>
+<span class="text-xs font-bold">92%</span>
+</div>
+</td>
+<td class="py-5 text-sm font-medium text-slate-500">45s</td>
+</tr>
+<tr class="group hover:bg-surface-container-low/50 transition-colors">
+<td class="py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-slate-200">
+<img alt="Agent" class="w-full h-full object-cover rounded-full" data-alt="Female office professional with headset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0--V9oK9sssrsAfFoTHw2jvOiTQlr9IEmxFedRNrrPD3DL5DY-L8as4V1aoNKmvdmODyF4WO6MF2V5dkaYS-lGP8gcudmW2raJ6uTpG9t-YEBENUhfELyWbjSa1Q-ZGLE8GRJ9OnGwkphgCPXL3DeyOEwH3jJdtx-kNM2Bey7_op2u_xSoE7l3tIRN21IIqbi7N_1Ws541ZdbMvzlCniCrZOHaqqf9dIk0AINFpwGHym9XbfuW7L0WiKh7aKZ9yGyjtQ9cFh7KOQ"/>
+</div>
+<span class="text-sm font-bold text-on-surface">Sarah Chen</span>
+</div>
+</td>
+<td class="py-5">
+<span class="flex items-center gap-1.5 text-amber-600 text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        Busy
+                                    </span>
+</td>
+<td class="py-5 text-sm font-semibold text-on-surface">24</td>
+<td class="py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 max-w-[100px] h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 88%"></div>
+</div>
+<span class="text-xs font-bold">88%</span>
+</div>
+</td>
+<td class="py-5 text-sm font-medium text-slate-500">1m 12s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB -->
+<button class="fixed bottom-8 right-8 w-14 h-14 rounded-full bg-primary text-white shadow-2xl shadow-primary/40 flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add_comment</span>
+</button>
+</body></html>
