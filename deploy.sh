@@ -36,6 +36,13 @@ php artisan view:cache
 # 1.5 Setup Nginx Configuration
 echo "🌐 Configuring Nginx..."
 NGINX_CONF="/etc/nginx/sites-available/whatsapp_panel"
+PHP_SOCKET=$(find /var/run/php/ -name "php*-fpm.sock" | head -n 1)
+
+if [ -z "$PHP_SOCKET" ]; then
+    echo "❌ Error: Could not find PHP-FPM socket in /var/run/php/"
+    exit 1
+fi
+
 cat <<EOF > $NGINX_CONF
 server {
     listen 80;
@@ -62,7 +69,7 @@ server {
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
-            fastcgi_pass unix:/var/run/php/php\$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')-fpm.sock;
+            fastcgi_pass unix:$PHP_SOCKET;
             fastcgi_param SCRIPT_FILENAME $BACKEND_DIR/public/index.php;
         }
     }
