@@ -55,21 +55,16 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
 
-    # Handle API requests FIRST
-    location ^~ /api {
+    # Handle API requests (Laravel Backend)
+    location /api {
         alias $BACKEND_DIR/public;
-        try_files \$uri \$uri/ @api;
+        try_files \$uri \$uri/ /api/index.php?\$query_string;
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
             fastcgi_pass unix:$PHP_SOCKET;
             fastcgi_param SCRIPT_FILENAME $BACKEND_DIR/public/index.php;
-            include fastcgi_params;
         }
-    }
-
-    location @api {
-        rewrite ^/api/(.*)$ /api/index.php?/\$1 last;
     }
 
     # Serve Frontend for everything else
