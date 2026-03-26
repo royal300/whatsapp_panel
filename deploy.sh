@@ -62,8 +62,7 @@ server {
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
-            # Try to auto-detect PHP-FPM socket
-            fastcgi_pass unix:\$(find /var/run/php/ -name "php*-fpm.sock" | head -n 1);
+            fastcgi_pass unix:/var/run/php/php\$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')-fpm.sock;
             fastcgi_param SCRIPT_FILENAME $BACKEND_DIR/public/index.php;
         }
     }
