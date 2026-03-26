@@ -36,49 +36,52 @@ php artisan view:cache
 # 1.5 Setup Nginx Configuration
 echo "🌐 Configuring Nginx..."
 NGINX_CONF="/etc/nginx/sites-available/whatsapp_panel"
-if [ ! -f "$NGINX_CONF" ]; then
-    cat <<EOF > $NGINX_CONF
+cat <<EOF > $NGINX_CONF
 server {
     listen 80;
     server_name whatsapp.royal300.com;
-    root $BACKEND_DIR/public;
+    root $FRONTEND_DIR/dist;
+
+    index index.html;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
 
-    index index.php;
-
     charset utf-8;
 
+    # Serve Frontend
     location / {
-        try_files \$uri \$uri/ /index.php?\$query_string;
+        try_files \$uri \$uri/ /index.html;
+    }
+
+    # Handle API requests (forward to Laravel)
+    location /api {
+        alias $BACKEND_DIR/public;
+        try_files \$uri \$uri/ @backend;
+
+        location ~ \.php\$ {
+            include snippets/fastcgi-php.conf;
+            # Try to auto-detect PHP-FPM socket
+            fastcgi_pass unix:\$(find /var/run/php/ -name "php*-fpm.sock" | head -n 1);
+            fastcgi_param SCRIPT_FILENAME $BACKEND_DIR/public/index.php;
+        }
+    }
+
+    location @backend {
+        rewrite /api/(.*)\$ /api/index.php?/\$1 last;
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
 
-    error_page 404 /index.php;
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
-    }
-
-    location ~ /\.(?!well-known).* {
+    location ~ /\\.(?!well-known).* {
         deny all;
-    }
-
-    # Frontend serving (fallback)
-    location /app {
-        alias $FRONTEND_DIR/dist;
-        try_files \$uri \$uri/ /index.html;
     }
 }
 EOF
-    ln -s $NGINX_CONF /etc/nginx/sites-enabled/
-    nginx -t && systemctl reload nginx
-fi
+ln -sf $NGINX_CONF /etc/nginx/sites-enabled/
+nginx -t && systemctl reload nginx
 
 # 2. Update Frontend
 echo "🏗️ Updating Frontend..."
