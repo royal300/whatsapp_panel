@@ -47,6 +47,17 @@ cat <<EOF > $NGINX_CONF
 server {
     listen 80;
     server_name whatsapp.royal300.com;
+    return 301 https://\$server_name\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name whatsapp.royal300.com;
+
+    ssl_certificate /etc/letsencrypt/live/whatsapp.royal300.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/whatsapp.royal300.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     index index.html index.php;
     charset utf-8;
