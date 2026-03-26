@@ -43,7 +43,10 @@ if [ -z "$PHP_SOCKET" ]; then
     exit 1
 fi
 
-cat <<EOF > $NGINX_CONF
+    # Create a recursive symlink so /api works with 'root' instead of buggy 'alias'
+    ln -sfn . $BACKEND_DIR/public/api
+
+    cat <<EOF > $NGINX_CONF
 server {
     listen 80;
     server_name whatsapp.royal300.com;
@@ -66,22 +69,17 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
 
-    # Handle API requests (Laravel Backend)
+    # Handle API requests (Laravel Backend) using the symlink trick
     location /api {
-        alias $BACKEND_DIR/public;
-        try_files \$uri \$uri/ @laravel;
+        root $BACKEND_DIR/public;
+        try_files \$uri \$uri/ /api/index.php?\$query_string;
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
             fastcgi_pass unix:$PHP_SOCKET;
-            # Use request_filename since alias handles the mapping
             fastcgi_param SCRIPT_FILENAME \$request_filename;
             include fastcgi_params;
         }
-    }
-
-    location @laravel {
-        rewrite /api/(.*)\$ /api/index.php?/\$1 last;
     }
 
     # Serve Frontend for everything else
