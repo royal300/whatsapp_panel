@@ -47,41 +47,41 @@ cat <<EOF > $NGINX_CONF
 server {
     listen 80;
     server_name whatsapp.royal300.com;
-    root $FRONTEND_DIR/dist;
 
-    index index.html;
+    index index.html index.php;
+    charset utf-8;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
 
-    charset utf-8;
-
-    # Serve Frontend
-    location / {
-        try_files \$uri \$uri/ /index.html;
-    }
-
-    # Handle API requests (forward to Laravel)
-    location /api {
+    # Handle API requests FIRST
+    location ^~ /api {
         alias $BACKEND_DIR/public;
-        try_files \$uri \$uri/ @backend;
+        try_files \$uri \$uri/ @api;
 
         location ~ \.php\$ {
             include snippets/fastcgi-php.conf;
             fastcgi_pass unix:$PHP_SOCKET;
             fastcgi_param SCRIPT_FILENAME $BACKEND_DIR/public/index.php;
+            include fastcgi_params;
         }
     }
 
-    location @backend {
-        rewrite /api/(.*)\$ /api/index.php?/\$1 last;
+    location @api {
+        rewrite ^/api/(.*)$ /api/index.php?/\$1 last;
+    }
+
+    # Serve Frontend for everything else
+    location / {
+        root $FRONTEND_DIR/dist;
+        try_files \$uri \$uri/ /index.html;
     }
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
 
-    location ~ /\\.(?!well-known).* {
+    location ~ /\.(?!well-known).* {
         deny all;
     }
 }
