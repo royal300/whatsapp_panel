@@ -6,6 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tenant extends Model
 {
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($tenant) {
+            if (empty($tenant->domain)) {
+                $slug = \Illuminate\Support\Str::slug($tenant->name);
+                $originalSlug = $slug;
+                $count = 1;
+
+                while (static::where('domain', $slug)->exists()) {
+                    $slug = $originalSlug . '-' . $count++;
+                }
+
+                $tenant->domain = $slug;
+            }
+        });
+    }
+
     protected $fillable = [
         'name',
         'domain',
