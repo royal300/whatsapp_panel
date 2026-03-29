@@ -26,10 +26,35 @@ class WebhookController extends Controller
         $payload = $request->all();
         Log::info('WhatsApp Webhook Payload: ', $payload);
 
-        // Logic to extract message and chat...
-        // For MVP, if there is a message, we create it and broadcast
-        if (isset($payload['entry'][0]['changes'][0]['value']['messages'][0])) {
-            $msgData = $payload['entry'][0]['changes'][0]['value']['messages'][0];
+        $value = $payload['entry'][0]['changes'][0]['value'] ?? [];
+        
+        // 1. Handle Status Updates (Sent, Delivered, Read, Failed)
+        if (isset($value['statuses'][0])) {
+            foreach ($value['statuses'] as $status) {
+                $messageId = $status['id'];
+                $statusName = $status['status']; // 'delivered', 'read', 'failed'
+                $error = null;
+
+                if ($statusName === 'failed' && isset($status['errors'][0])) {
+                    $error = $status['errors'][0]['message'] ?? 'Meta Delivery Failure';
+                }
+
+                // Update Campaign Logs
+                CampaignLog::where('message_id', $messageId)->update([
+                    'status' => $statusName,
+                    'error_message' => $error
+                ]);
+
+                // Update Individual Messages
+                Message::where('meta_message_id', $messageId)->update([
+                    'status' => $statusName
+                ]);
+            }
+        }
+
+        // 2. Handle Incoming Messages
+        if (isset($value['messages'][0])) {
+            $msgData = $value['messages'][0];
             $wabaId = $payload['entry'][0]['id'];
             $tenant = \App\Models\Tenant::where('meta_waba_id', $wabaId)->first();
 

@@ -21,9 +21,13 @@ PROJECT_ROOT="/var/www/whatsapp_panel"
 BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 
+# Fix Ownership
+git config --global --add safe.directory "$PROJECT_ROOT"
+
 echo "🚀 Starting Deployment..."
 
 # 0. Update Code from GitHub
+cd "$PROJECT_ROOT"
 echo "🔄 Updating code..."
 if [ -d ".git" ]; then
     echo "🔄 Pulling latest code from GitHub..."
@@ -34,7 +38,7 @@ fi
 
 # 1. Update Backend
 echo "📦 Updating Backend..."
-cd $BACKEND_DIR
+cd "$BACKEND_DIR"
 
 # Create production .env if it doesn't exist
 if [ ! -f .env ]; then
