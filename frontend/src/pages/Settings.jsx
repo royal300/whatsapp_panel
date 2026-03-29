@@ -8,10 +8,6 @@ const Settings = () => {
         meta_access_token: '',
         meta_app_id: '',
         meta_app_secret: '',
-        pusher_app_id: '',
-        pusher_app_key: '',
-        pusher_app_secret: '',
-        pusher_app_cluster: '',
         whatsapp_display_name: '',
         whatsapp_business_description: '',
         whatsapp_business_address: '',
@@ -38,10 +34,6 @@ const Settings = () => {
                     meta_access_token: String(data.meta_access_token || ''),
                     meta_app_id: String(data.meta_app_id || ''),
                     meta_app_secret: String(data.meta_app_secret || ''),
-                    pusher_app_id: String(data.pusher_app_id || ''),
-                    pusher_app_key: String(data.pusher_app_key || ''),
-                    pusher_app_secret: String(data.pusher_app_secret || ''),
-                    pusher_app_cluster: String(data.pusher_app_cluster || ''),
                     whatsapp_display_name: data.whatsapp_display_name || '',
                     whatsapp_business_description: data.whatsapp_business_description || '',
                     whatsapp_business_address: data.whatsapp_business_address || '',
@@ -214,17 +206,6 @@ const Settings = () => {
                     >
                         <span className="material-symbols-outlined">api</span>
                         Meta Cloud API
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('pusher')}
-                        className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-headline font-bold text-sm transition-all ${
-                            activeTab === 'pusher' 
-                            ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                            : 'text-on-surface-variant hover:bg-surface-container-low grayscale'
-                        }`}
-                    >
-                        <span className="material-symbols-outlined">sync</span>
-                        Pusher Real-time
                     </button>
                 </div>
 
@@ -426,58 +407,6 @@ const Settings = () => {
                                             <span className="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer hover:text-primary transition-colors">visibility</span>
                                         </div>
                                         <p className="text-[10px] text-on-surface-variant font-medium px-1 italic">This token should have <code className="text-primary font-bold">whatsapp_business_messaging</code> and <code className="text-primary font-bold">whatsapp_business_management</code> permissions.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'pusher' && (
-                            <div className="space-y-8 animate-in fade-in duration-500">
-                                <div>
-                                    <h3 className="text-xl font-headline font-extrabold text-on-surface mb-1">Real-time Synchronization</h3>
-                                    <p className="text-sm text-on-surface-variant font-medium">Configure Pusher to enable instant message updates in the Team Inbox.</p>
-                                </div>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">App ID</label>
-                                        <input 
-                                            type="text"
-                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
-                                            placeholder="Pusher App ID"
-                                            value={formData.pusher_app_id}
-                                            onChange={(e) => setFormData({...formData, pusher_app_id: e.target.value})}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">App Key</label>
-                                        <input 
-                                            type="text"
-                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
-                                            placeholder="Pusher Key"
-                                            value={formData.pusher_app_key}
-                                            onChange={(e) => setFormData({...formData, pusher_app_key: e.target.value})}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">App Secret</label>
-                                        <input 
-                                            type="password"
-                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
-                                            placeholder="Pusher Secret"
-                                            value={formData.pusher_app_secret}
-                                            onChange={(e) => setFormData({...formData, pusher_app_secret: e.target.value})}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">App Cluster</label>
-                                        <input 
-                                            type="text"
-                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
-                                            placeholder="e.g. ap2"
-                                            value={formData.pusher_app_cluster}
-                                            onChange={(e) => setFormData({...formData, pusher_app_cluster: e.target.value})}
-                                        />
                                     </div>
                                 </div>
                             </div>
