@@ -109,6 +109,23 @@ class WhatsAppService
     }
 
     /**
+     * Get a single template by name from Meta.
+     */
+    public function getTemplateByName(string $name)
+    {
+        if (!$this->tenant->meta_waba_id) throw new Exception("WABA ID missing.");
+        $url = "{$this->baseUrl}/{$this->tenant->meta_waba_id}/message_templates";
+
+        $response = Http::withToken($this->tenant->meta_access_token)
+            ->timeout(10)
+            ->get($url, [
+                'name' => $name
+            ]);
+
+        return $response->json();
+    }
+
+    /**
      * Get WhatsApp Business Profile details.
      */
     public function getBusinessProfile()

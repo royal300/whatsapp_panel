@@ -24,6 +24,12 @@ const Templates = () => {
     const [newTemplate, setNewTemplate] = useState(initialFormState);
     const [formLoading, setFormLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+    
+    // New states for test sending
+    const [showTestModal, setShowTestModal] = useState(false);
+    const [selectedTemplate, setSelectedTemplate] = useState(null);
+    const [testForm, setTestForm] = useState({ phone: '', variables: [] });
+    const [testLoading, setTestLoading] = useState(false);
 
     const fetchTemplates = async () => {
         setLoading(true);
@@ -34,6 +40,32 @@ const Templates = () => {
             console.error('Failed to fetch templates', err);
         }
         setLoading(false);
+    };
+
+    const handleRefresh = async (id) => {
+        try {
+            const res = await api.get(`/templates/${id}/refresh`);
+            setTemplates(templates.map(t => t.id === id ? res.data : t));
+            setMessage({ type: 'success', text: `Status refreshed: ${res.data.status}` });
+        } catch (err) {
+            setMessage({ type: 'error', text: 'Refresh failed' });
+        }
+    };
+
+    const handleTestSend = async (e) => {
+        e.preventDefault();
+        setTestLoading(true);
+        try {
+            await api.post(`/templates/${selectedTemplate.id}/test`, {
+                phone: testForm.phone,
+                variables: testForm.variables 
+            });
+            setMessage({ type: 'success', text: 'Test message sent successfully!' });
+            setShowTestModal(false);
+        } catch (err) {
+            setMessage({ type: 'error', text: err.response?.data?.message || 'Test send failed' });
+        }
+        setTestLoading(false);
     };
 
     useEffect(() => {
@@ -240,9 +272,28 @@ const Templates = () => {
                             <div className="flex items-center justify-between mt-auto">
                                 <span className="text-[10px] font-black text-on-surface-variant opacity-40 uppercase tracking-widest">ID: {template.whatsapp_template_id?.slice(-8)}</span>
                                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="w-8 h-8 rounded-lg bg-surface-container hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center">
-                                        <span className="material-symbols-outlined text-sm">visibility</span>
+                                    <button 
+                                        onClick={() => handleRefresh(template.id)}
+                                        title="Refresh status"
+                                        className="w-8 h-8 rounded-lg bg-surface-container hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">sync</span>
                                     </button>
+                                    {template.status?.toLowerCase() === 'approved' && (
+                                        <button 
+                                            onClick={() => {
+                                                setSelectedTemplate(template);
+                                                const body = template.content?.find(c => c.type === 'BODY')?.text || '';
+                                                const variableCount = (body.match(/{{[0-9]+}}/g) || []).length;
+                                                setTestForm({ phone: '', variables: Array(variableCount).fill('') });
+                                                setShowTestModal(true);
+                                            }}
+                                            title="Send Test"
+                                            className="w-8 h-8 rounded-lg bg-surface-container hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors flex items-center justify-center"
+                                        >
+                                            <span className="material-symbols-outlined text-sm">send</span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -328,9 +379,10 @@ const Templates = () => {
                                     >
                                         <option value="NONE">None</option>
                                         <option value="TEXT">Text</option>
-                                        <option value="IMAGE">Image</option>
+                                        {/* Disabling these for now as Meta requires media handles/uploaded IDs */}
+                                        {/* <option value="IMAGE">Image</option>
                                         <option value="VIDEO">Video</option>
-                                        <option value="DOCUMENT">Document</option>
+                                        <option value="DOCUMENT">Document</option> */}
                                     </select>
                                     {newTemplate.header_type === 'TEXT' && (
                                         <input 
@@ -339,12 +391,6 @@ const Templates = () => {
                                             value={newTemplate.header_text}
                                             onChange={(e) => setNewTemplate({...newTemplate, header_text: e.target.value})}
                                         />
-                                    )}
-                                    {['IMAGE', 'VIDEO', 'DOCUMENT'].includes(newTemplate.header_type) && (
-                                        <div className="bg-primary/5 border border-primary/10 rounded-2xl py-3 px-5 text-[10px] font-bold text-primary flex items-center gap-2">
-                                            <span className="material-symbols-outlined text-sm">info</span>
-                                            Static media handle will be created.
-                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -433,6 +479,62 @@ const Templates = () => {
                                 {formLoading ? 'Submitting...' : 'Submit to Meta'}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Test Send Modal */}
+            {showTestModal && selectedTemplate && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-on-surface/20 backdrop-blur-md">
+                    <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                        <div className="p-8 bg-surface-container-low flex justify-between items-center border-b border-outline-variant/10">
+                            <h3 className="text-xl font-headline font-black text-on-surface">Test Template: {selectedTemplate.name}</h3>
+                            <button onClick={() => setShowTestModal(false)} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container transition-colors">
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        
+                        <form onSubmit={handleTestSend} className="p-10 space-y-6">
+                            <div className="space-y-1.5 text-left">
+                                <label className="text-[11px] font-black uppercase tracking-[0.1em] text-on-surface-variant ml-1">Recipient Phone Number</label>
+                                <input 
+                                    className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                    placeholder="e.g. 919331XXXXXX"
+                                    required
+                                    value={testForm.phone}
+                                    onChange={(e) => setTestForm({...testForm, phone: e.target.value})}
+                                />
+                                <p className="text-[10px] text-on-surface-variant italic mt-1 px-1">Include country code (e.g. 91 for India).</p>
+                            </div>
+
+                            {testForm.variables.map((v, i) => (
+                                <div key={i} className="space-y-1.5 text-left animate-in slide-in-from-bottom-2" style={{ animationDelay: `${i * 100}ms` }}>
+                                    <label className="text-[11px] font-black uppercase tracking-[0.1em] text-on-surface-variant ml-1">Variable {'{{'}{i + 1}{'}}'}</label>
+                                    <input 
+                                        className="w-full bg-surface-container-low border-none rounded-2xl py-3 px-5 text-xs font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                        placeholder={`Value for {{${i+1}}}`}
+                                        required
+                                        value={v}
+                                        onChange={(e) => {
+                                            const newVars = [...testForm.variables];
+                                            newVars[i] = e.target.value;
+                                            setTestForm({...testForm, variables: newVars});
+                                        }}
+                                    />
+                                </div>
+                            ))}
+
+                            <div className="pt-4 flex gap-4">
+                                <button type="button" onClick={() => setShowTestModal(false)} className="flex-1 py-4 rounded-full font-headline font-bold text-sm bg-surface-container-highest text-on-surface-variant hover:bg-surface-container transition-all">Cancel</button>
+                                <button 
+                                    type="submit"
+                                    disabled={testLoading}
+                                    className="flex-1 py-4 rounded-full font-headline font-bold text-sm bg-gradient-to-br from-emerald-600 to-emerald-400 text-white shadow-lg shadow-emerald-200 hover:shadow-xl transition-all active:scale-95 disabled:opacity-50"
+                                >
+                                    {testLoading ? 'Sending...' : 'Send Test Now'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

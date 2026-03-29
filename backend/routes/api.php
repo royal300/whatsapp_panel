@@ -31,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('contacts/import', [ContactController::class, 'import']);
     Route::apiResource('contacts', ContactController::class);
+    Route::get('templates/{id}/refresh', [TemplateController::class, 'refreshStatus']);
+    Route::post('templates/{id}/test', [TemplateController::class, 'test']);
     Route::apiResource('templates', TemplateController::class);
     Route::apiResource('campaigns', CampaignController::class);
     Route::post('campaigns/{campaign}/retry', [CampaignController::class, 'retry']);
