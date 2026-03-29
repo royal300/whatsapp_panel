@@ -1,7 +1,10 @@
 import React from 'react';
 import Sidebar from './Sidebar';
+import { useAuth } from '../context/AuthContext';
 
 const Layout = ({ children }) => {
+    const { user, billing } = useAuth();
+
     return (
         <div className="flex min-h-screen bg-surface">
             <Sidebar />
@@ -26,8 +29,8 @@ const Layout = ({ children }) => {
                             <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
                             <div className="flex items-center gap-3">
                                 <div className="text-right">
-                                    <p className="text-sm font-bold text-slate-900 leading-none">Admin User</p>
-                                    <p className="text-[10px] text-emerald-600 font-semibold mt-1">Enterprise</p>
+                                    <p className="text-sm font-bold text-slate-900 leading-none">{user?.name || 'User'}</p>
+                                    <p className="text-[10px] text-emerald-600 font-semibold mt-1">{billing?.plan_name || 'Free Plan'}</p>
                                 </div>
                                 <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-slate-100 bg-emerald-100 flex items-center justify-center">
                                     <span className="material-symbols-outlined text-emerald-600">person</span>

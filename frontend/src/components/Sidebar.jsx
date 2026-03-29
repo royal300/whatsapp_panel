@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const Sidebar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { logout } = useAuth();
+    const { user, billing, logout } = useAuth();
 
     const menuItems = [
         { name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
@@ -69,11 +69,11 @@ const Sidebar = () => {
 
             <div className="px-6 mt-4">
                 <div className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20">
-                    <p className="text-xs font-semibold text-primary mb-2">Pro Plan Active</p>
+                    <p className="text-xs font-semibold text-primary mb-2">{billing?.plan_name || 'Free Plan'} Active</p>
                     <div className="w-full bg-slate-200 h-1.5 rounded-full mb-3">
-                        <div className="bg-primary h-1.5 rounded-full w-[85%]"></div>
+                        <div className="bg-primary h-1.5 rounded-full" style={{ width: `${billing?.percentage || 0}%` }}></div>
                     </div>
-                    <p className="text-[10px] text-on-surface-variant leading-tight">85% of monthly messages used.</p>
+                    <p className="text-[10px] text-on-surface-variant leading-tight">{billing?.percentage?.toFixed(0) || 0}% of monthly messages used.</p>
                 </div>
             </div>
         </aside>
