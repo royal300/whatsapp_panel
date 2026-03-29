@@ -33,10 +33,18 @@ class ProcessCampaignJob implements ShouldQueue
         foreach ($audience as $item) {
             $phoneNumber = $item['phone'] ?? null;
             $contactName = $item['name'] ?? null;
-            $tags = $item['tags'] ?? []; // Array of strings e.g. ["vip", "loyal"]
-            $variables = $item['variables'] ?? []; // Array of strings for {{1}}, {{2}} etc.
+            $tags = $item['tags'] ?? [];
+            $variables = $item['variables'] ?? [];
 
             if (!$phoneNumber) continue;
+
+            // Fix Scientific Notation and clean non-numeric characters
+            if (is_numeric($phoneNumber)) {
+                $phoneNumber = number_format((float)$phoneNumber, 0, '', '');
+            }
+            $phoneNumber = preg_replace('/[^0-9]/', '', $phoneNumber);
+
+            if (empty($phoneNumber)) continue;
 
             if (!$billing->canSend($tenant)) {
                 $this->campaign->update(['status' => 'failed', 'error_message' => 'Insufficient credits']);
