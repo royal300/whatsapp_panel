@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('contacts', ContactController::class);
     Route::apiResource('templates', TemplateController::class);
     Route::apiResource('campaigns', CampaignController::class);
+    Route::post('campaigns/{campaign}/retry', [CampaignController::class, 'retry']);
     Route::apiResource('chats', ChatController::class);
     Route::post('chats/{chat}/send', [ChatController::class, 'sendMessage']);
     Route::get('automation-rules', [\App\Http\Controllers\AutomationRuleController::class, 'index']);

@@ -13,6 +13,8 @@ const Campaigns = () => {
     const [showModal, setShowModal] = useState(false);
     const [showStatsModal, setShowStatsModal] = useState(false);
     const [selectedCampaign, setSelectedCampaign] = useState(null);
+    const [selectedNumbers, setSelectedNumbers] = useState([]); // Array of strings (phone numbers)
+    const [retrying, setRetrying] = useState(false);
     const [stats, setStats] = useState({ totalSent: 0, deliveredRate: 0 });
     const [step, setStep] = useState(1);
     const [formLoading, setFormLoading] = useState(false);
@@ -56,6 +58,45 @@ const Campaigns = () => {
             console.error('Failed to fetch campaigns', err);
         }
         setLoading(false);
+    };
+
+    const handleRetry = async (numbers) => {
+        if (!numbers || numbers.length === 0) return;
+        setRetrying(true);
+        try {
+            await api.post(`/campaigns/${selectedCampaign.id}/retry`, { numbers });
+            // Clean selection
+            setSelectedNumbers([]);
+            // Refresh campaigns to get status update (it will be 'running')
+            fetchCampaigns();
+            // Also update the specific selectedCampaign if it's currently open
+            const res = await api.get(`/campaigns`); 
+            const updated = res.data.find(c => c.id === selectedCampaign.id);
+            if (updated) setSelectedCampaign(updated);
+            
+            setMessage({ type: 'success', text: `Retry logic dispatched for ${numbers.length} numbers.` });
+            setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+        } catch (err) {
+            console.error('Failed to retry campaign', err);
+            setMessage({ type: 'error', text: 'Failed to dispatch retry.' });
+        }
+        setRetrying(false);
+    };
+
+    const toggleSelectNumber = (number) => {
+        if (selectedNumbers.includes(number)) {
+            setSelectedNumbers(selectedNumbers.filter(n => n !== number));
+        } else {
+            setSelectedNumbers([...selectedNumbers, number]);
+        }
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedNumbers.length === selectedCampaign?.audience?.length) {
+            setSelectedNumbers([]);
+        } else {
+            setSelectedNumbers(selectedCampaign?.audience?.map(a => a.phone) || []);
+        }
     };
 
     const fetchTemplates = async () => {
@@ -330,7 +371,16 @@ const Campaigns = () => {
                                 <table className="w-full text-left">
                                     <thead className="bg-surface-container-low/50 border-b border-outline-variant/10">
                                         <tr>
+                                            <th className="px-6 py-4 w-12 sticky left-0 bg-surface-container-low">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="w-5 h-5 accent-primary rounded cursor-pointer" 
+                                                    checked={selectedNumbers.length === (selectedCampaign?.audience?.length || 0)}
+                                                    onChange={toggleSelectAll}
+                                                />
+                                            </th>
                                             <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Recipient</th>
+                                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-center">Retry</th>
                                             <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Variables</th>
                                             <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Status</th>
                                             <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant text-right">Message ID</th>
@@ -339,9 +389,33 @@ const Campaigns = () => {
                                     <tbody className="divide-y divide-outline-variant/5">
                                         {(selectedCampaign.audience || []).map((entry, idx) => {
                                             const log = selectedCampaign.logs?.find(l => l.number === entry.phone);
+                                            const isSelected = selectedNumbers.includes(entry.phone);
                                             return (
-                                                <tr key={idx} className="hover:bg-surface-container-low/30 transition-colors">
-                                                    <td className="px-6 py-4 font-bold text-on-surface text-sm">{entry.phone}</td>
+                                                <tr key={idx} className={`group hover:bg-surface-container-low/30 transition-colors ${isSelected ? 'bg-primary/5' : ''}`}>
+                                                    <td className="px-6 py-4 sticky left-0">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            className="w-5 h-5 accent-primary rounded cursor-pointer" 
+                                                            checked={isSelected}
+                                                            onChange={() => toggleSelectNumber(entry.phone)}
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div>
+                                                            <p className="font-bold text-on-surface text-sm">{entry.phone}</p>
+                                                            {entry.name && <p className="text-[10px] text-on-surface-variant font-medium opacity-60 uppercase">{entry.name}</p>}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <button 
+                                                            onClick={() => handleRetry([entry.phone])}
+                                                            disabled={retrying}
+                                                            title="Retry this number"
+                                                            className="w-8 h-8 rounded-lg animate-in hover:bg-primary/10 hover:text-primary text-on-surface-variant flex items-center justify-center transition-all disabled:opacity-20"
+                                                        >
+                                                            <span className={`material-symbols-outlined text-lg ${retrying ? 'animate-spin' : ''}`}>refresh</span>
+                                                        </button>
+                                                    </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex gap-2">
                                                             {(entry.variables || []).map((v, vIdx) => (
@@ -379,7 +453,19 @@ const Campaigns = () => {
                             </div>
                         </div>
 
-                        <div className="p-8 bg-surface-container-low border-t border-outline-variant/10 flex justify-end">
+                        <div className="p-8 bg-surface-container-low border-t border-outline-variant/10 flex justify-between items-center">
+                            <div className="flex items-center gap-4">
+                                {selectedNumbers.length > 0 && (
+                                    <button 
+                                        onClick={() => handleRetry(selectedNumbers)}
+                                        disabled={retrying}
+                                        className="px-8 py-4 rounded-full font-headline font-bold text-sm bg-primary text-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined">refresh</span>
+                                        Retry {selectedNumbers.length} Selected
+                                    </button>
+                                )}
+                            </div>
                             <button 
                                 onClick={() => setShowStatsModal(false)}
                                 className="px-10 py-4 rounded-full font-headline font-bold text-sm bg-on-surface text-white hover:scale-105 active:scale-95 transition-all shadow-xl shadow-on-surface/10"

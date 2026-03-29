@@ -12,8 +12,10 @@ class ProcessCampaignJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public \App\Models\Campaign $campaign)
-    {
+    public function __construct(
+        public \App\Models\Campaign $campaign,
+        public ?array $numbersToRetry = null
+    ) {
     }
 
     /**
@@ -29,6 +31,13 @@ class ProcessCampaignJob implements ShouldQueue
         $this->campaign->update(['status' => 'running']);
 
         $audience = $this->campaign->audience ?? [];
+
+        // If retrying specific numbers, filter the audience
+        if (!empty($this->numbersToRetry)) {
+            $audience = array_filter($audience, function($item) {
+                return in_array($item['phone'], $this->numbersToRetry);
+            });
+        }
 
         foreach ($audience as $item) {
             $phoneNumber = $item['phone'] ?? null;
@@ -84,13 +93,18 @@ class ProcessCampaignJob implements ShouldQueue
 
                 $billing->incrementUsage($tenant);
 
-                \App\Models\CampaignLog::create([
-                    'campaign_id' => $this->campaign->id,
-                    'contact_id' => null,
-                    'number' => $phoneNumber,
-                    'message_id' => $messageId,
-                    'status' => 'sent'
-                ]);
+                \App\Models\CampaignLog::updateOrCreate(
+                    [
+                        'campaign_id' => $this->campaign->id,
+                        'number' => $phoneNumber,
+                    ],
+                    [
+                        'contact_id' => null,
+                        'message_id' => $messageId,
+                        'status' => 'sent',
+                        'error_message' => null,
+                    ]
+                );
 
                 try {
                     // SYNC TO TEAM INBOX
@@ -145,12 +159,16 @@ class ProcessCampaignJob implements ShouldQueue
                 }
 
             } catch (\Exception $e) {
-                \App\Models\CampaignLog::create([
-                    'campaign_id' => $this->campaign->id,
-                    'number' => $phoneNumber,
-                    'status' => 'failed',
-                    'error_message' => $e->getMessage()
-                ]);
+                \App\Models\CampaignLog::updateOrCreate(
+                    [
+                        'campaign_id' => $this->campaign->id,
+                        'number' => $phoneNumber,
+                    ],
+                    [
+                        'status' => 'failed',
+                        'error_message' => $e->getMessage()
+                    ]
+                );
             }
 
             // Sleep to avoid hitting Meta rate limits too fast (adjust as needed)

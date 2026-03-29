@@ -45,6 +45,18 @@ class CampaignController extends Controller
         return response()->json($campaign, 201);
     }
 
+    public function retry(Request $request, Campaign $campaign)
+    {
+        $validated = $request->validate([
+            'numbers' => 'required|array',
+            'numbers.*' => 'required|string'
+        ]);
+
+        ProcessCampaignJob::dispatch($campaign, $validated['numbers']);
+
+        return response()->json(['message' => 'Retry job dispatched successfully']);
+    }
+
     public function show(string $id) { /*...*/ }
     public function update(Request $request, string $id) { /*...*/ }
     public function destroy(string $id) { /*...*/ }
