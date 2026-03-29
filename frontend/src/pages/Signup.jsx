@@ -7,7 +7,8 @@ const Signup = () => {
         name: '',
         email: '',
         password: '',
-        tenant_name: ''
+        password_confirmation: '',
+        company_name: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -18,8 +19,21 @@ const Signup = () => {
         e.preventDefault();
         setError('');
         setLoading(true);
+
+        if (formData.password !== formData.password_confirmation) {
+            setError('Passwords do not match');
+            setLoading(false);
+            return;
+        }
+
         try {
-            await register(formData);
+            await register({
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                password_confirmation: formData.password_confirmation,
+                company_name: formData.company_name
+            });
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed');
@@ -84,14 +98,14 @@ const Signup = () => {
                             </div>
 
                             <div className="space-y-1.5">
-                                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" htmlFor="tenant">Company / Business Name</label>
+                                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" htmlFor="company">Company / Business Name</label>
                                 <input 
                                     className="w-full bg-surface-container-highest/50 border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none" 
-                                    id="tenant" 
+                                    id="company" 
                                     placeholder="Acme Inc." 
                                     type="text"
-                                    value={formData.tenant_name}
-                                    onChange={(e) => setFormData({...formData, tenant_name: e.target.value})}
+                                    value={formData.company_name}
+                                    onChange={(e) => setFormData({...formData, company_name: e.target.value})}
                                     required
                                 />
                             </div>
@@ -118,6 +132,19 @@ const Signup = () => {
                                     type="password"
                                     value={formData.password}
                                     onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1" htmlFor="password_confirmation">Confirm Password</label>
+                                <input 
+                                    className="w-full bg-surface-container-highest/50 border-none rounded-xl px-4 py-3.5 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none" 
+                                    id="password_confirmation" 
+                                    placeholder="••••••••" 
+                                    type="password"
+                                    value={formData.password_confirmation}
+                                    onChange={(e) => setFormData({...formData, password_confirmation: e.target.value})}
                                     required
                                 />
                             </div>

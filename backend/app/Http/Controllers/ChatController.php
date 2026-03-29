@@ -16,7 +16,7 @@ class ChatController extends Controller
     {
         $tenantId = Auth::user()->tenant_id;
         return response()->json(
-            Chat::with(['contact', 'messages'])
+            Chat::with(['contact.tags', 'messages'])
                 ->where('tenant_id', $tenantId)
                 ->orderBy('updated_at', 'desc')
                 ->get()

@@ -6,14 +6,26 @@ const Settings = () => {
         meta_waba_id: '',
         meta_phone_number_id: '',
         meta_access_token: '',
+        meta_app_id: '',
+        meta_app_secret: '',
         pusher_app_id: '',
         pusher_app_key: '',
         pusher_app_secret: '',
-        pusher_app_cluster: ''
+        pusher_app_cluster: '',
+        whatsapp_display_name: '',
+        whatsapp_business_description: '',
+        whatsapp_business_address: '',
+        whatsapp_business_email: '',
+        whatsapp_business_websites: [],
+        whatsapp_business_vertical: '',
+        whatsapp_profile_picture_url: ''
     });
     const [loading, setLoading] = useState(false);
+    const [syncing, setSyncing] = useState(false);
+    const [uploadingLogo, setUploadingLogo] = useState(false);
     const [message, setMessage] = useState('');
-    const [activeTab, setActiveTab] = useState('api'); // api, pusher, profile
+    const [activeTab, setActiveTab] = useState('profile'); // Default to profile as requested
+    const fileInputRef = React.useRef(null);
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -24,10 +36,19 @@ const Settings = () => {
                     meta_waba_id: String(data.meta_waba_id || ''),
                     meta_phone_number_id: String(data.meta_phone_number_id || ''),
                     meta_access_token: String(data.meta_access_token || ''),
+                    meta_app_id: String(data.meta_app_id || ''),
+                    meta_app_secret: String(data.meta_app_secret || ''),
                     pusher_app_id: String(data.pusher_app_id || ''),
                     pusher_app_key: String(data.pusher_app_key || ''),
                     pusher_app_secret: String(data.pusher_app_secret || ''),
-                    pusher_app_cluster: String(data.pusher_app_cluster || '')
+                    pusher_app_cluster: String(data.pusher_app_cluster || ''),
+                    whatsapp_display_name: data.whatsapp_display_name || '',
+                    whatsapp_business_description: data.whatsapp_business_description || '',
+                    whatsapp_business_address: data.whatsapp_business_address || '',
+                    whatsapp_business_email: data.whatsapp_business_email || '',
+                    whatsapp_business_websites: data.whatsapp_business_websites || [],
+                    whatsapp_business_vertical: data.whatsapp_business_vertical || '',
+                    whatsapp_profile_picture_url: data.whatsapp_profile_picture_url || ''
                 });
             } catch (err) {
                 console.error('Failed to fetch settings', err);
@@ -36,13 +57,87 @@ const Settings = () => {
         fetchSettings();
     }, []);
 
+    const handleSyncProfile = async () => {
+        setSyncing(true);
+        setMessage('');
+        try {
+            const response = await api.post('/tenant/settings/sync-profile');
+            const data = response.data.data;
+            setFormData(prev => ({
+                ...prev,
+                whatsapp_business_description: data.whatsapp_business_description || '',
+                whatsapp_business_address: data.whatsapp_business_address || '',
+                whatsapp_business_email: data.whatsapp_business_email || '',
+                whatsapp_business_websites: data.whatsapp_business_websites || [],
+                whatsapp_business_vertical: data.whatsapp_business_vertical || '',
+                whatsapp_profile_picture_url: data.whatsapp_profile_picture_url || ''
+            }));
+            setMessage('Profile synced from WhatsApp successfully!');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (err) {
+            console.error(err);
+            setMessage('Error: Failed to sync profile. Check your API credentials.');
+        }
+        setSyncing(false);
+    };
+
+    const handleLogoUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Basic validation
+        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+            setMessage('Error: Please select a JPG or PNG image.');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            setMessage('Error: Image size should be less than 5MB.');
+            return;
+        }
+
+        setUploadingLogo(true);
+        setMessage('Uploading logo to WhatsApp...');
+        const data = new FormData();
+        data.append('logo', file);
+
+        try {
+            const resp = await api.post('/tenant/settings/logo', data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            setFormData(prev => ({
+                ...prev,
+                whatsapp_profile_picture_url: resp.data.profile_picture_url
+            }));
+            setMessage('Profile picture updated successfully!');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error) {
+            console.error('Logo upload error:', error);
+            setMessage('Error: ' + (error.response?.data?.message || 'Failed to upload logo.'));
+        } finally {
+            setUploadingLogo(false);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setMessage('');
         try {
-            await api.post('/tenant/settings', formData);
+            const res = await api.post('/tenant/settings', formData);
             setMessage('Configuration updated successfully!');
+            
+            // Update local state with fresh data from server
+            const data = res.data.data;
+            setFormData(prev => ({
+                ...prev,
+                ...data,
+                meta_waba_id: String(data.meta_waba_id || ''),
+                meta_phone_number_id: String(data.meta_phone_number_id || ''),
+                meta_access_token: String(data.meta_access_token || '')
+            }));
+
             setTimeout(() => setMessage(''), 5000);
         } catch (err) {
             console.error(err);
@@ -50,6 +145,28 @@ const Settings = () => {
         }
         setLoading(false);
     };
+
+    const verticals = [
+        { id: 'UNDEFINED', label: 'Undefined' },
+        { id: 'OTHER', label: 'Other' },
+        { id: 'AUTO', label: 'Automotive' },
+        { id: 'BEAUTY', label: 'Beauty & Spa' },
+        { id: 'APPAREL', label: 'Apparel & Fashion' },
+        { id: 'EDU', label: 'Education' },
+        { id: 'ENTERTAIN', label: 'Entertainment' },
+        { id: 'EVENT_PLAN', label: 'Event Planning' },
+        { id: 'FINANCE', label: 'Finance' },
+        { id: 'GROCERY', label: 'Grocery' },
+        { id: 'GOVT', label: 'Government' },
+        { id: 'HOTEL', label: 'Hotel' },
+        { id: 'INSTITUTION', label: 'Public Institution' },
+        { id: 'MEDICAL', label: 'Medical & Health' },
+        { id: 'NONPROFIT', label: 'Non-Profit' },
+        { id: 'PROF_SERVICES', label: 'Professional Services' },
+        { id: 'RETAIL', label: 'Retail' },
+        { id: 'TRAVEL', label: 'Travel & Tourism' },
+        { id: 'RESTAURANT', label: 'Restaurant & Hospitality' },
+    ];
 
     return (
         <div className="px-10 pb-12">
@@ -77,6 +194,17 @@ const Settings = () => {
                 {/* Navigation Sidebar */}
                 <div className="col-span-12 lg:col-span-3 space-y-2">
                     <button 
+                        onClick={() => setActiveTab('profile')}
+                        className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-headline font-bold text-sm transition-all ${
+                            activeTab === 'profile' 
+                            ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                            : 'text-on-surface-variant hover:bg-surface-container-low grayscale'
+                        }`}
+                    >
+                        <span className="material-symbols-outlined">person</span>
+                        Business Profile
+                    </button>
+                    <button 
                         onClick={() => setActiveTab('api')}
                         className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-headline font-bold text-sm transition-all ${
                             activeTab === 'api' 
@@ -98,22 +226,165 @@ const Settings = () => {
                         <span className="material-symbols-outlined">sync</span>
                         Pusher Real-time
                     </button>
-                    <button 
-                        onClick={() => setActiveTab('profile')}
-                        className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-headline font-bold text-sm transition-all ${
-                            activeTab === 'profile' 
-                            ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                            : 'text-on-surface-variant hover:bg-surface-container-low grayscale'
-                        }`}
-                    >
-                        <span className="material-symbols-outlined">person</span>
-                        Business Profile
-                    </button>
                 </div>
 
                 {/* Form Area */}
                 <div className="col-span-12 lg:col-span-9">
                     <form onSubmit={handleSubmit} className="bg-surface-container-lowest rounded-[2.5rem] p-10 shadow-[0px_20px_40px_rgba(20,29,36,0.06)] border border-outline-variant/10">
+                        {activeTab === 'profile' && (
+                            <div className="space-y-8 animate-in fade-in duration-500">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h3 className="text-xl font-headline font-extrabold text-on-surface mb-1">Business Profile</h3>
+                                        <p className="text-sm text-on-surface-variant font-medium">Update your business details that appear to customers on WhatsApp.</p>
+                                    </div>
+                                    <button 
+                                        type="button"
+                                        onClick={handleSyncProfile}
+                                        disabled={syncing}
+                                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-low text-primary font-bold text-xs hover:bg-surface-container-medium transition-all"
+                                    >
+                                        <span className={`material-symbols-outlined text-sm ${syncing ? 'animate-spin' : ''}`}>sync</span>
+                                        {syncing ? 'Syncing...' : 'Sync from Meta'}
+                                    </button>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Profile Image Section */}
+                                    <div className="col-span-1 md:col-span-2 flex items-center gap-6 p-6 bg-surface-container-low rounded-3xl border border-outline-variant/10">
+                                        <div 
+                                            className="relative group cursor-pointer"
+                                            onClick={() => !uploadingLogo && fileInputRef.current?.click()}
+                                        >
+                                            <div className={`w-24 h-24 rounded-full bg-primary/10 border-4 border-white shadow-xl overflow-hidden flex items-center justify-center transition-all ${uploadingLogo ? 'opacity-40' : ''}`}>
+                                                {formData.whatsapp_profile_picture_url ? (
+                                                    <img src={formData.whatsapp_profile_picture_url} alt="Profile" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <span className="material-symbols-outlined text-4xl text-primary opacity-40">storefront</span>
+                                                )}
+                                                {uploadingLogo && (
+                                                    <div className="absolute inset-0 flex items-center justify-center">
+                                                        <span className="material-symbols-outlined text-3xl text-primary animate-spin">refresh</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {!uploadingLogo && (
+                                                <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span className="material-symbols-outlined text-white">photo_camera</span>
+                                                </div>
+                                            )}
+                                            <input 
+                                                type="file" 
+                                                ref={fileInputRef}
+                                                onChange={handleLogoUpload}
+                                                className="hidden" 
+                                                accept="image/jpeg,image/png"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-headline font-extrabold text-on-surface">{formData.whatsapp_display_name || 'Business Name'}</h4>
+                                            <p className="text-xs text-on-surface-variant font-medium mb-2">{formData.whatsapp_business_vertical || 'Category Not Set'}</p>
+                                            <div className="flex gap-2">
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-tighter">
+                                                    WhatsApp Active
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Official Display Name</label>
+                                        <input 
+                                            type="text"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all font-headline"
+                                            placeholder="Your Business Name"
+                                            value={formData.whatsapp_display_name}
+                                            onChange={(e) => setFormData({...formData, whatsapp_display_name: e.target.value})}
+                                        />
+                                        <p className="text-[10px] text-on-surface-variant opacity-60 italic ml-1">Official name changes require Meta review and approval.</p>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Description</label>
+                                        <textarea 
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all min-h-[120px]"
+                                            placeholder="Tell customers about your business..."
+                                            value={formData.whatsapp_business_description}
+                                            onChange={(e) => setFormData({...formData, whatsapp_business_description: e.target.value})}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Industry / Vertical</label>
+                                            <select 
+                                                className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                value={formData.whatsapp_business_vertical}
+                                                onChange={(e) => setFormData({...formData, whatsapp_business_vertical: e.target.value})}
+                                            >
+                                                <option value="">Select an industry</option>
+                                                {verticals.map(v => (
+                                                    <option key={v.id} value={v.id}>{v.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Contact Email</label>
+                                            <input 
+                                                type="email"
+                                                className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                placeholder="business@example.com"
+                                                value={formData.whatsapp_business_email}
+                                                onChange={(e) => setFormData({...formData, whatsapp_business_email: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Address</label>
+                                            <input 
+                                                type="text"
+                                                className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                placeholder="Street, City, Country"
+                                                value={formData.whatsapp_business_address}
+                                                onChange={(e) => setFormData({...formData, whatsapp_business_address: e.target.value})}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Websites (Max 2)</label>
+                                            <div className="space-y-3">
+                                                <input 
+                                                    type="url"
+                                                    className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                    placeholder="https://example.com"
+                                                    value={formData.whatsapp_business_websites[0] || ''}
+                                                    onChange={(e) => {
+                                                        const newWebsites = [...formData.whatsapp_business_websites];
+                                                        newWebsites[0] = e.target.value;
+                                                        setFormData({...formData, whatsapp_business_websites: newWebsites});
+                                                    }}
+                                                />
+                                                <input 
+                                                    type="url"
+                                                    className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                    placeholder="https://another.com (Optional)"
+                                                    value={formData.whatsapp_business_websites[1] || ''}
+                                                    onChange={(e) => {
+                                                        const newWebsites = [...formData.whatsapp_business_websites];
+                                                        newWebsites[1] = e.target.value;
+                                                        setFormData({...formData, whatsapp_business_websites: newWebsites});
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         {activeTab === 'api' && (
                             <div className="space-y-8 animate-in fade-in duration-500">
                                 <div>
@@ -208,23 +479,6 @@ const Settings = () => {
                                             onChange={(e) => setFormData({...formData, pusher_app_cluster: e.target.value})}
                                         />
                                     </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'profile' && (
-                            <div className="space-y-8 animate-in fade-in duration-500">
-                                <div>
-                                    <h3 className="text-xl font-headline font-extrabold text-on-surface mb-1">Business Profile</h3>
-                                    <p className="text-sm text-on-surface-variant font-medium">Update your business details that appear to customers on WhatsApp.</p>
-                                </div>
-                                
-                                <div className="p-12 border-2 border-dashed border-outline-variant/30 rounded-[2rem] text-center flex flex-col items-center gap-4">
-                                    <div className="w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant opacity-20">
-                                        <span className="material-symbols-outlined text-5xl">storefront</span>
-                                    </div>
-                                    <p className="text-on-surface-variant font-bold text-sm">Business profile management coming soon.</p>
-                                    <p className="text-xs text-on-surface-variant/60 max-w-[240px]">This feature will allow you to sync your WhatsApp display name and profile picture directly from here.</p>
                                 </div>
                             </div>
                         )}

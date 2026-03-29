@@ -70,6 +70,16 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['user' => $request->user()]);
+        $user = $request->user();
+        $tenant = $user->tenant;
+        
+        $billingService = new \App\Services\BillingService();
+        $billingStats = $billingService->getUsageStats($tenant);
+
+        return response()->json([
+            'user' => $user,
+            'tenant' => $tenant,
+            'billing' => $billingStats
+        ]);
     }
 }

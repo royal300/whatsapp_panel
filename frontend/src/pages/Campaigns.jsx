@@ -22,9 +22,9 @@ const Campaigns = () => {
         name: '',
         template_id: '',
         audienceType: 'manual', // manual | csv
-        audience: [{ phone: '', variables: [] }],
+        audience: [{ phone: '', name: '', tags: '', variables: [] }],
         csvData: null,
-        csvMapping: { phone: '', variables: [] }
+        csvMapping: { phone: '', name: '', tags: '', variables: [] }
     };
 
     const [newCampaign, setNewCampaign] = useState(initialCampaignState);
@@ -94,8 +94,8 @@ const Campaigns = () => {
         setNewCampaign({
             ...newCampaign,
             template_id: templateId,
-            audience: [{ phone: '', variables: new Array(uniqueVarCount).fill('') }],
-            csvMapping: { phone: '', variables: new Array(uniqueVarCount).fill('') }
+            audience: [{ phone: '', name: '', tags: '', variables: new Array(uniqueVarCount).fill('') }],
+            csvMapping: { phone: '', name: '', tags: '', variables: new Array(uniqueVarCount).fill('') }
         });
     };
 
@@ -125,11 +125,18 @@ const Campaigns = () => {
 
         let finalAudience = [];
         if (newCampaign.audienceType === 'manual') {
-            finalAudience = newCampaign.audience.filter(a => a.phone);
+            finalAudience = newCampaign.audience.filter(a => a.phone).map(a => ({
+                phone: a.phone,
+                name: a.name,
+                tags: a.tags ? a.tags.split(',').map(t => t.trim()) : [],
+                variables: a.variables
+            }));
         } else {
             // Map CSV rows using mapping state
             finalAudience = newCampaign.csvData.rows.map(row => ({
                 phone: row[newCampaign.csvMapping.phone],
+                name: row[newCampaign.csvMapping.name] || '',
+                tags: row[newCampaign.csvMapping.tags] ? row[newCampaign.csvMapping.tags].split(',').map(t => t.trim()) : [],
                 variables: newCampaign.csvMapping.variables.map(header => row[header] || '')
             })).filter(a => a.phone);
         }
@@ -157,7 +164,7 @@ const Campaigns = () => {
         const varCount = newCampaign.audience[0]?.variables?.length || 0;
         setNewCampaign({
             ...newCampaign,
-            audience: [...newCampaign.audience, { phone: '', variables: new Array(varCount).fill('') }]
+            audience: [...newCampaign.audience, { phone: '', name: '', tags: '', variables: new Array(varCount).fill('') }]
         });
     };
 
@@ -482,7 +489,9 @@ const Campaigns = () => {
                                                     <table className="w-full text-left">
                                                         <thead>
                                                             <tr className="border-b border-outline-variant/10">
-                                                                <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Phone Number (with code)</th>
+                                                                <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">Phone Number</th>
+                                                                <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant px-4">Contact Name</th>
+                                                                <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant px-4">Tags (comma separated)</th>
                                                                 {newCampaign.audience[0]?.variables.map((_, i) => (
                                                                     <th key={i} className="pb-4 text-[10px] font-black uppercase tracking-widest text-on-surface-variant px-4">Var {i + 1}</th>
                                                                 ))}
@@ -500,6 +509,30 @@ const Campaigns = () => {
                                                                             onChange={(e) => {
                                                                                 const updated = [...newCampaign.audience];
                                                                                 updated[idx].phone = e.target.value;
+                                                                                setNewCampaign({...newCampaign, audience: updated});
+                                                                            }}
+                                                                        />
+                                                                    </td>
+                                                                    <td className="py-4 px-4">
+                                                                        <input 
+                                                                            className="w-full bg-white border border-outline-variant/10 rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                                            placeholder="John Doe"
+                                                                            value={row.name}
+                                                                            onChange={(e) => {
+                                                                                const updated = [...newCampaign.audience];
+                                                                                updated[idx].name = e.target.value;
+                                                                                setNewCampaign({...newCampaign, audience: updated});
+                                                                            }}
+                                                                        />
+                                                                    </td>
+                                                                    <td className="py-4 px-4">
+                                                                        <input 
+                                                                            className="w-full bg-white border border-outline-variant/10 rounded-xl py-3 px-4 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                                            placeholder="vip, loyal"
+                                                                            value={row.tags}
+                                                                            onChange={(e) => {
+                                                                                const updated = [...newCampaign.audience];
+                                                                                updated[idx].tags = e.target.value;
                                                                                 setNewCampaign({...newCampaign, audience: updated});
                                                                             }}
                                                                         />
@@ -534,11 +567,23 @@ const Campaigns = () => {
                                         ) : (
                                             <div className="space-y-10">
                                                 {!newCampaign.csvData ? (
-                                                    <div className="border-4 border-dashed border-outline-variant/20 rounded-[3rem] p-20 flex flex-col items-center justify-center gap-6 group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden">
+                                                    <div className="border-4 border-dashed border-outline-variant/20 rounded-[3rem] p-16 flex flex-col items-center justify-center gap-6 group hover:border-primary/50 transition-all cursor-pointer relative overflow-hidden">
                                                         <input type="file" accept=".csv" className="absolute inset-0 opacity-0 cursor-pointer" onChange={handleCsvUpload} />
+                                                        
+                                                        <a 
+                                                            href="/campaign_template.csv" 
+                                                            download="campaign_template.csv"
+                                                            className="inline-flex items-center gap-2 px-6 py-2.5 bg-surface-container rounded-full text-[11px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 transition-all border border-outline-variant/10 z-10"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <span className="material-symbols-outlined text-base">download</span>
+                                                            Download Dummy CSV
+                                                        </a>
+
                                                         <div className="w-24 h-24 rounded-[2.5rem] bg-surface-container-low flex items-center justify-center text-on-surface-variant group-hover:scale-110 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500">
                                                             <span className="material-symbols-outlined text-5xl">upload_file</span>
                                                         </div>
+
                                                         <div className="text-center">
                                                             <p className="text-xl font-headline font-black text-on-surface">Upload Audience CSV</p>
                                                             <p className="text-sm text-on-surface-variant mt-1 font-medium italic">Max 10k rows • First row must be headers</p>
@@ -563,23 +608,45 @@ const Campaigns = () => {
                                                                         {newCampaign.csvData.headers.map(h => <option key={h} value={h}>{h}</option>)}
                                                                     </select>
                                                                 </div>
-                                                                {newCampaign.csvMapping.variables.map((v, vIdx) => (
-                                                                    <div key={vIdx} className="space-y-2">
-                                                                        <label className="text-[11px] font-black text-on-surface uppercase tracking-tight ml-1">Variable {'{{' + (vIdx + 1) + '}}'} Column</label>
+                                                                    <div className="space-y-2">
+                                                                        <label className="text-[11px] font-black text-on-surface uppercase tracking-tight ml-1">Contact Name Column (Optional)</label>
                                                                         <select 
                                                                             className="w-full bg-white border border-outline-variant/10 rounded-2xl py-4 px-5 text-sm font-bold focus:ring-2 focus:ring-primary/10 transition-all shadow-sm cursor-pointer"
-                                                                            value={v}
-                                                                            onChange={(e) => {
-                                                                                const updatedVars = [...newCampaign.csvMapping.variables];
-                                                                                updatedVars[vIdx] = e.target.value;
-                                                                                setNewCampaign({...newCampaign, csvMapping: {...newCampaign.csvMapping, variables: updatedVars}});
-                                                                            }}
+                                                                            value={newCampaign.csvMapping.name}
+                                                                            onChange={(e) => setNewCampaign({...newCampaign, csvMapping: {...newCampaign.csvMapping, name: e.target.value}})}
                                                                         >
                                                                             <option value="">-- Select Column --</option>
                                                                             {newCampaign.csvData.headers.map(h => <option key={h} value={h}>{h}</option>)}
                                                                         </select>
                                                                     </div>
-                                                                ))}
+                                                                    <div className="space-y-2">
+                                                                        <label className="text-[11px] font-black text-on-surface uppercase tracking-tight ml-1">Tags Column (Optional, comma separated)</label>
+                                                                        <select 
+                                                                            className="w-full bg-white border border-outline-variant/10 rounded-2xl py-4 px-5 text-sm font-bold focus:ring-2 focus:ring-primary/10 transition-all shadow-sm cursor-pointer"
+                                                                            value={newCampaign.csvMapping.tags}
+                                                                            onChange={(e) => setNewCampaign({...newCampaign, csvMapping: {...newCampaign.csvMapping, tags: e.target.value}})}
+                                                                        >
+                                                                            <option value="">-- Select Column --</option>
+                                                                            {newCampaign.csvData.headers.map(h => <option key={h} value={h}>{h}</option>)}
+                                                                        </select>
+                                                                    </div>
+                                                                    {newCampaign.csvMapping.variables.map((v, vIdx) => (
+                                                                        <div key={vIdx} className="space-y-2">
+                                                                            <label className="text-[11px] font-black text-on-surface uppercase tracking-tight ml-1">Variable {'{{' + (vIdx + 1) + '}}'} Column</label>
+                                                                            <select 
+                                                                                className="w-full bg-white border border-outline-variant/10 rounded-2xl py-4 px-5 text-sm font-bold focus:ring-2 focus:ring-primary/10 transition-all shadow-sm cursor-pointer"
+                                                                                value={v}
+                                                                                onChange={(e) => {
+                                                                                    const updatedVars = [...newCampaign.csvMapping.variables];
+                                                                                    updatedVars[vIdx] = e.target.value;
+                                                                                    setNewCampaign({...newCampaign, csvMapping: {...newCampaign.csvMapping, variables: updatedVars}});
+                                                                                }}
+                                                                            >
+                                                                                <option value="">-- Select Column --</option>
+                                                                                {newCampaign.csvData.headers.map(h => <option key={h} value={h}>{h}</option>)}
+                                                                            </select>
+                                                                        </div>
+                                                                    ))}
                                                             </div>
                                                         </div>
                                                         <div className="bg-surface-container-low rounded-[2rem] p-8">

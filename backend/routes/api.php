@@ -12,7 +12,7 @@ use App\Http\Controllers\ChatController;
 Route::get('/webhook', [WebhookController::class, 'verify']);
 Route::post('/webhook', [WebhookController::class, 'handle']);
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
     Broadcast::routes(); // Enable private channel authorization
@@ -22,11 +22,14 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/tenant/settings', [\App\Http\Controllers\TenantSettingsController::class, 'index']);
     Route::post('/tenant/settings', [\App\Http\Controllers\TenantSettingsController::class, 'update']);
+    Route::post('/tenant/settings/sync-profile', [\App\Http\Controllers\TenantSettingsController::class, 'syncProfile']);
+    Route::post('/tenant/settings/logo', [\App\Http\Controllers\TenantSettingsController::class, 'updateLogo']);
     
     Route::post('/templates/sync', [TemplateController::class, 'sync']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'me']);
 
+    Route::post('contacts/import', [ContactController::class, 'import']);
     Route::apiResource('contacts', ContactController::class);
     Route::apiResource('templates', TemplateController::class);
     Route::apiResource('campaigns', CampaignController::class);

@@ -10,6 +10,7 @@ class Contact extends Model
         'tenant_id',
         'name',
         'phone_number',
+        'profile_picture',
         'status'
     ];
 

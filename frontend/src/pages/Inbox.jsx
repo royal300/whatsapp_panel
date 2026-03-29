@@ -155,14 +155,18 @@ const Inbox = () => {
                                 }`}
                             >
                                 <div className="relative flex-shrink-0">
-                                    <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold">
-                                        {chat.contact?.first_name?.[0] || chat.contact?.phone_number?.[1] || '?'}
+                                    <div className="w-12 h-12 rounded-full bg-emerald-100 overflow-hidden flex items-center justify-center text-emerald-600 font-bold">
+                                        {chat.contact?.profile_picture ? (
+                                            <img src={chat.contact.profile_picture} alt="" className="w-full h-full object-cover" />
+                                        ) : (
+                                            (chat.contact?.name && chat.contact.name !== 'WhatsApp User') ? chat.contact.name[0] : (chat.contact?.phone_number?.[1] || '?')
+                                        )}
                                     </div>
                                     <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-primary-container border-2 border-white rounded-full"></div>
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start mb-0.5">
-                                        <h3 className="font-semibold text-sm truncate">{chat.contact?.first_name || chat.contact?.phone_number}</h3>
+                                        <h3 className="font-semibold text-sm truncate">{chat.contact?.name || chat.contact?.phone_number}</h3>
                                         <span className="text-[10px] text-on-surface-variant font-medium">
                                             {chat.messages?.length > 0 ? new Date(chat.messages[chat.messages.length - 1].created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                                         </span>
@@ -185,11 +189,15 @@ const Inbox = () => {
                         <header className="px-8 h-20 bg-surface/40 backdrop-blur-md flex items-center justify-between flex-shrink-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden flex items-center justify-center">
-                                     <span className="material-symbols-outlined text-on-surface-variant">person</span>
+                                     {selectedChat.contact?.profile_picture ? (
+                                         <img src={selectedChat.contact.profile_picture} alt="" className="w-full h-full object-cover" />
+                                     ) : (
+                                         <span className="material-symbols-outlined text-on-surface-variant">person</span>
+                                     )}
                                 </div>
                                 <div>
                                     <h2 className="font-headline font-bold text-base leading-tight">
-                                        {selectedChat.contact?.first_name ? `${selectedChat.contact.first_name} ${selectedChat.contact.last_name || ''}` : selectedChat.contact?.phone_number}
+                                        {selectedChat.contact?.name || selectedChat.contact?.phone_number}
                                     </h2>
                                     <div className="flex items-center gap-1.5">
                                         <span className="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
@@ -289,15 +297,19 @@ const Inbox = () => {
                 {selectedChat ? (
                     <div className="px-6 pb-8 space-y-8">
                         <div className="flex flex-col items-center text-center space-y-3">
-                            <div className="w-24 h-24 rounded-full ring-4 ring-white shadow-2xl relative bg-surface-container-highest flex items-center justify-center">
-                                <span className="material-symbols-outlined text-4xl text-on-surface-variant">person</span>
+                            <div className="w-24 h-24 rounded-full ring-4 ring-white shadow-2xl relative bg-surface-container-highest overflow-hidden flex items-center justify-center">
+                                {selectedChat.contact?.profile_picture ? (
+                                    <img src={selectedChat.contact.profile_picture} alt="" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="material-symbols-outlined text-4xl text-on-surface-variant">person</span>
+                                )}
                                 <div className="absolute bottom-1 right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md">
                                     <span className="material-symbols-outlined text-[#25D366] text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                                 </div>
                             </div>
                             <div>
-                                <h3 className="font-bold text-lg">{selectedChat.contact?.first_name} {selectedChat.contact?.last_name}</h3>
-                                <p className="text-sm text-on-surface-variant">{selectedChat.contact?.phone_number}</p>
+                                <h3 className="font-bold text-lg">{selectedChat.contact?.name || 'Unknown'}</h3>
+                                <p className="text-sm text-on-surface-variant font-medium tracking-tight mt-0.5">{selectedChat.contact?.phone_number}</p>
                             </div>
                         </div>
 
@@ -305,8 +317,8 @@ const Inbox = () => {
                             <label className="text-[10px] font-extrabold text-on-surface-variant uppercase tracking-widest">Tags</label>
                             <div className="flex flex-wrap gap-2">
                                 {selectedChat.contact?.tags?.length > 0 ? (
-                                    selectedChat.contact.tags.split(',').map(tag => (
-                                        <span key={tag} className="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed text-[11px] font-bold rounded-full">{tag}</span>
+                                    selectedChat.contact.tags.map(tag => (
+                                        <span key={tag.id} className="px-3 py-1 bg-secondary-fixed text-on-secondary-fixed text-[11px] font-bold rounded-full">{tag.name}</span>
                                     ))
                                 ) : (
                                     <span className="px-3 py-1 bg-surface-container-highest text-on-surface-variant text-[11px] font-bold rounded-full">No tags</span>

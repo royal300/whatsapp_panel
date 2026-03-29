@@ -34,10 +34,23 @@ class WebhookController extends Controller
             $tenant = \App\Models\Tenant::where('meta_waba_id', $wabaId)->first();
 
             if ($tenant) {
-                $contact = \App\Models\Contact::firstOrCreate(
-                    ['phone_number' => $msgData['from'], 'tenant_id' => $tenant->id],
-                    ['name' => $payload['entry'][0]['changes'][0]['value']['contacts'][0]['profile']['name'] ?? 'WhatsApp User']
-                );
+                $contact = \App\Models\Contact::where('phone_number', $msgData['from'])
+                    ->where('tenant_id', $tenant->id)
+                    ->first();
+
+                $profileName = $payload['entry'][0]['changes'][0]['value']['contacts'][0]['profile']['name'] ?? 'WhatsApp User';
+
+                if (!$contact) {
+                    $contact = \App\Models\Contact::create([
+                        'phone_number' => $msgData['from'],
+                        'tenant_id' => $tenant->id,
+                        'name' => $profileName,
+                        'status' => 'subscribed'
+                    ]);
+                } elseif ($contact->name === 'WhatsApp User' && $profileName !== 'WhatsApp User') {
+                    // Update if we only have generic name but Meta gave us a real one
+                    $contact->update(['name' => $profileName]);
+                }
 
                 $chat = \App\Models\Chat::firstOrCreate(
                     ['contact_id' => $contact->id, 'tenant_id' => $tenant->id],

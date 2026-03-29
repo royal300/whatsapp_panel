@@ -32,6 +32,8 @@ class ProcessCampaignJob implements ShouldQueue
 
         foreach ($audience as $item) {
             $phoneNumber = $item['phone'] ?? null;
+            $contactName = $item['name'] ?? null;
+            $tags = $item['tags'] ?? []; // Array of strings e.g. ["vip", "loyal"]
             $variables = $item['variables'] ?? []; // Array of strings for {{1}}, {{2}} etc.
 
             if (!$phoneNumber) continue;
@@ -84,10 +86,23 @@ class ProcessCampaignJob implements ShouldQueue
 
                 try {
                     // SYNC TO TEAM INBOX
-                    $contact = \App\Models\Contact::firstOrCreate(
+                    $contact = \App\Models\Contact::updateOrCreate(
                         ['phone_number' => $phoneNumber, 'tenant_id' => $tenant->id],
-                        ['name' => 'WhatsApp User']
+                        ['name' => $contactName ?: 'WhatsApp User']
                     );
+
+                    // Sync Tags
+                    if (!empty($tags)) {
+                        $tagIds = [];
+                        foreach ($tags as $tagName) {
+                            $tag = \App\Models\ContactTag::firstOrCreate([
+                                'tenant_id' => $tenant->id,
+                                'name' => trim($tagName)
+                            ]);
+                            $tagIds[] = $tag->id;
+                        }
+                        $contact->tags()->syncWithoutDetaching($tagIds);
+                    }
 
                     $chat = \App\Models\Chat::firstOrCreate(
                         ['contact_id' => $contact->id, 'tenant_id' => $tenant->id],

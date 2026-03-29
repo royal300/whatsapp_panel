@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 
 const Dashboard = () => {
-    const { user } = useAuth();
+    const { user, billing } = useAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState({ 
         contacts: 0, 
@@ -69,6 +69,26 @@ const Dashboard = () => {
                     </button>
                 </div>
             </div>
+
+            {/* Subscription Usage Card */}
+            {billing && (
+                <div className="mb-8 w-full max-w-md">
+                    <div className="bg-[#E9F7F7] p-6 rounded-2xl border border-[#065F46]/10 shadow-sm">
+                        <h3 className="text-[#065F46] text-xl font-extrabold mb-4">{billing.plan_name} Active</h3>
+                        
+                        <div className="w-full bg-[#D1D5DB] rounded-full h-2.5 mb-4 overflow-hidden">
+                            <div 
+                                className="bg-[#065F46] h-2.5 rounded-full transition-all duration-1000" 
+                                style={{ width: `${Math.min(100, billing.percentage)}%` }}
+                            ></div>
+                        </div>
+                        
+                        <p className="text-[#374151] text-lg font-medium">
+                            {billing.percentage.toFixed(0)}% of monthly messages used.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {/* Metric Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
