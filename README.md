@@ -1,88 +1,84 @@
-# Royal300 WhatsApp SaaS Panel
+# 🚀 Royal300 WhatsApp SaaS Panel
 
-A comprehensive WhatsApp Marketing and Team Inbox solution built on the Meta WhatsApp Cloud API.
+A premium, comprehensive WhatsApp Marketing and Team Inbox solution engineered for scale. Built on the **Meta WhatsApp Cloud API**, this panel provides everything businesses need to manage customer interactions and broadcast marketing campaigns efficiently.
 
-## 🚀 Key Features
-- **Campaign Management**: Broadcast personalized messages using mapping variables (`{{1}}`, `{{2}}`).
-- **Template Synchronization**: Real-time sync with Meta's approved templates.
-- **Team Inbox**: Unified dashboard for incoming/outgoing chats with auto-retry and real-time polling.
-- **Detailed Analytics**: Track delivery status, read rates, and recipient logs.
-- **SaaS Ready**: Multi-tenant architecture with per-tenant WhatsApp configurations and billing (in progress).
+---
+
+## ✨ Key Features
+
+### 📬 Team Inbox & Real-time Chat
+- **Unified Dashboard**: Manage all incoming and outgoing messages from a single screen.
+- **Intelligent Name Fallback**: Automatically prioritizes **Saved Name > WhatsApp Profile Name > Phone Number**.
+- **Profile Picture Support**: Seamlessly displays contact avatars for a more human interaction.
+- **Real-time Sync**: Powered by Laravel Echo and robust 10-second polling failovers.
+- **Auto-Discovery**: Automatically captures and stores WhatsApp profile names on the first message.
+
+### 👥 Advanced Contacts (CRM)
+- **Full CRUD**: Create, edit, and delete contacts with a sleek user interface.
+- **Smart CSV Import**: Bulk upload thousands of contacts with automated phone formatting and tag syncing.
+- **Tagging System**: Organize your audience with dynamic tags for targeted broadcasting.
+- **Audience Insights**: High-level metrics on subscriber status and engagement.
+
+### 📢 Targeted Campaigns
+- **Dynamic Variable Mapping**: Personalized broadcasts using `{{1}}`, `{{2}}` variables.
+- **Error Tracking**: Detailed logs for failed messages with actionable error insights.
+- **Template Management**: Real-time synchronization with Meta's approved message templates.
+- **CSV Templates**: Downloadable ready-to-use CSV templates for campaign data.
+
+### 🏗️ SaaS & Branding
+- **Multi-Tenant Architecture**: Secure data isolation between different business accounts.
+- **Custom Branding**: Tenants can set their own **Business Name** and **Profile Picture** within the panel.
+- **VPS Ready**: Includes automated synchronization and deployment scripts for easy scaling.
 
 ---
 
 ## 🛠️ Technology Stack
-- **Backend**: Laravel 11, MySQL, PHP 8.2+
-- **Frontend**: React 18, Tailwind CSS, Rsbuild
-- **Real-time**: Laravel Echo & Polling Fallback
-- **Integrations**: Meta WhatsApp Cloud API
+
+| Layer | Technology |
+| :--- | :--- |
+| **Backend** | Laravel 11 (PHP 8.2+) |
+| **Frontend** | React 18, Tailwind CSS, Rsbuild |
+| **Database** | MySQL 8.0 / PostgreSQL |
+| **Real-time** | Laravel Echo, Pusher, Webhooks |
+| **Branding** | Material Symbols, Headline Typography |
 
 ---
 
 ## ⚙️ Installation & Setup
 
 ### 1. Backend Setup
-1. Move to the `backend` directory:
-   ```bash
-   cd backend
-   ```
-2. Install dependencies:
-   ```bash
-   composer install
-   ```
-3. Set up environment:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-4. Run migrations and seed data:
-   ```bash
-   php artisan migrate --seed
-   ```
-5. Start the server:
-   ```bash
-   php artisan serve --port=8000
-   ```
+```bash
+cd backend
+composer install
+cp .env.example .env     # Configure DB and WA_CLOUD_API keys
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
 
 ### 2. Frontend Setup
-1. Move to the `frontend` directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the dev server:
-   ```bash
-   npm run dev
-   ```
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
-## 🔑 Access Credentials (Dev)
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **Admin** | `admin@royal300.com` | `password` |
-| **Manager** | `royal300ad@gmail.com` | `password` |
-
----
-
-## 📡 Webhook Setup (Local)
-To receive incoming messages on `localhost`:
-1. Expose your server using `ngrok http 8000`.
-2. Set Callback URL in Meta: `[NGROK_URL]/api/webhook`.
-3. Set Verify Token: `royal300_secret_token`.
-4. Subscribe to the `messages` field.
+## 🚀 Deployment (VPS)
+This project includes a specialized deployment workflow:
+1. **Sync**: Use `bash vps_sync.sh` to push local changes to the VPS.
+2. **Deploy**: The `deploy.sh` script on the server handles migrations, dependency updates, and frontend builds automatically.
 
 ---
 
 ## 📄 Recent Updates
-- **2026-03-23**: 
-  - Integrated Broadcast Sync with Team Inbox.
-  - Implemented Template Reconstruction (Actual text instead of placeholders).
-  - Added 10-second polling and auto-scroll to Inbox UI.
-  - Enabled metadata tracking for campaigns.
+- **2026-03-29**:
+  - ✨ Added **Contacts CRM** with full CRUD and CSV bulk import.
+  - 🖼️ Implemented **Profile Picture** support across Inbox and Contacts.
+  - 🏷️ Fixed **Tag mapping** in Chat sidebar.
+  - 🔄 Updated **Inbox Fallback Logic** for superior contact name display.
+  - 📊 Added **Error Message tracking** in Campaign logs.
 
 ---
 *Created with ❤️ by Antigravity AI*
