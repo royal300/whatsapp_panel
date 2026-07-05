@@ -45,4 +45,17 @@ rsync -avz --progress \
     --exclude='*' \
     "./" "$VPS_USER@$VPS_IP:$REMOTE_PATH/"
 
-echo "✅ Sync Complete! Now run the deployment script on your VPS."
+echo "✅ Sync Complete!"
+
+# Automatically commit and push to GitHub
+echo "📦 Committing and Pushing to GitHub..."
+git add .
+if ! git diff-index --quiet HEAD; then
+    git commit -m "Auto-sync update to VPS"
+    git push origin main
+    echo "✅ GitHub Push Complete!"
+else
+    echo "ℹ️ No changes to commit to GitHub."
+fi
+
+echo "🚀 Now run the deployment script on your VPS if needed."
