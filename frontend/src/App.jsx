@@ -27,7 +27,7 @@ const PrivateRoute = ({ children }) => {
 const AdminRoute = ({ children }) => {
     const { user, loading } = useAuth();
     if (loading) return <div>Loading...</div>;
-    return user && user.role === 'admin' ? children : <Navigate to="/inbox" />;
+    return user && (user.role === 'admin' || user.role === 'super_admin') ? children : <Navigate to="/inbox" />;
 };
 
 const SuperAdminRoute = ({ children }) => {
