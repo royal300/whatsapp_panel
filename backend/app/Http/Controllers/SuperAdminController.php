@@ -16,7 +16,7 @@ class SuperAdminController extends Controller
 
         // Return all tenants with their primary owner
         $tenants = Tenant::with(['users' => function($query) {
-            $query->where('role', 'admin')->select('id', 'tenant_id', 'name', 'email');
+            $query->select('id', 'tenant_id', 'name', 'email', 'role');
         }])->get();
 
         return response()->json($tenants);
