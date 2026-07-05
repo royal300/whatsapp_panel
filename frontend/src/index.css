@@ -2,14 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================
+   Light Mode Variables (default)
+   ============================================= */
 :root {
   --primary: #006d2f;
   --secondary: #25D366;
+
+  --color-surface: #f6f9ff;
+  --color-on-surface: #141d24;
+  --color-on-surface-variant: #3c4a3d;
+  --color-surface-container: #e6eff9;
+  --color-surface-container-low: #ebf5ff;
+  --color-surface-container-highest: #dae3ee;
+  --color-surface-container-lowest: #ffffff;
+  --color-outline: #6c7b6b;
+  --color-outline-variant: #bbcbb9;
+
+  --shadow-premium: rgba(20,29,36,0.06);
+  
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-border: rgba(226,232,240,0.1);
+  --sidebar-hover: #f8fafc;
+  --sidebar-active-bg: rgba(16,185,129,0.06);
+  --sidebar-text: #64748b;
+  --sidebar-active-text: #047857;
+
+  /* Top Nav */
+  --topnav-bg: rgba(255,255,255,0.7);
+  --topnav-border: rgba(226,232,240,0.2);
+  --topnav-name: #0f172a;
+  --topnav-divider: #e2e8f0;
+  --topnav-icon-hover: rgba(241,245,249,0.5);
+
+  /* Cards & badges */
+  --badge-emerald-bg: #ecfdf5;
+  --badge-emerald-text: #059669;
+  --badge-slate-bg: #f1f5f9;
+  --badge-slate-text: #64748b;
+  --card-border: rgba(187,203,185,0.05);
+
+  /* Inputs */
+  --input-bg: #dae3ee;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #E2E8F0;
+  --scrollbar-thumb-hover: #CBD5E1;
+
+  /* Pro Plan Card in sidebar */
+  --plan-progress-track: #e2e8f0;
+
+  /* Modal overlay */
+  --modal-overlay: rgba(0,0,0,0.4);
+  --modal-bg: #ffffff;
 }
 
+/* =============================================
+   ✨ Premium Dark Mode Variables
+   ============================================= */
+.dark {
+  --color-surface: #0c1017;
+  --color-on-surface: #e8edf4;
+  --color-on-surface-variant: #8b95a5;
+  --color-surface-container: #151b25;
+  --color-surface-container-low: #121822;
+  --color-surface-container-highest: #1c2433;
+  --color-surface-container-lowest: #0e131b;
+  --color-outline: #5a6a78;
+  --color-outline-variant: #2a3545;
+
+  --shadow-premium: rgba(0,0,0,0.4);
+
+  /* Sidebar — deep charcoal with subtle blue tint */
+  --sidebar-bg: rgba(12,16,23,0.95);
+  --sidebar-border: rgba(37,211,102,0.06);
+  --sidebar-hover: rgba(255,255,255,0.04);
+  --sidebar-active-bg: rgba(37,211,102,0.10);
+  --sidebar-text: #6b7a8d;
+  --sidebar-active-text: #34d399;
+
+  /* Top Nav — frosted glass dark */
+  --topnav-bg: rgba(12,16,23,0.80);
+  --topnav-border: rgba(37,211,102,0.08);
+  --topnav-name: #e8edf4;
+  --topnav-divider: rgba(255,255,255,0.06);
+  --topnav-icon-hover: rgba(255,255,255,0.06);
+
+  /* Cards & badges — subtle neon glows */
+  --badge-emerald-bg: rgba(37,211,102,0.12);
+  --badge-emerald-text: #4ade80;
+  --badge-slate-bg: rgba(148,163,184,0.10);
+  --badge-slate-text: #94a3b8;
+  --card-border: rgba(37,211,102,0.06);
+
+  /* Inputs */
+  --input-bg: #151b25;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #1c2433;
+  --scrollbar-thumb-hover: #2a3545;
+
+  /* Pro Plan Card in sidebar */
+  --plan-progress-track: #1c2433;
+
+  /* Modal overlay */
+  --modal-overlay: rgba(0,0,0,0.7);
+  --modal-bg: #151b25;
+}
+
+/* =============================================
+   Base Styles
+   ============================================= */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f6f9ff;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 h1, h2, h3, .font-headline {
@@ -20,51 +129,342 @@ h1, h2, h3, .font-headline {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* Glassmorphism Sidebar */
+/* =============================================
+   Glassmorphism Sidebar
+   ============================================= */
 .glass-sidebar {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--sidebar-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--sidebar-border);
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
-/* Smooth Transitions */
+.dark .glass-sidebar {
+  box-shadow: 
+    1px 0 30px rgba(0,0,0,0.3),
+    inset -1px 0 0 rgba(37,211,102,0.04);
+}
+
+/* =============================================
+   Smooth Transitions
+   ============================================= */
 .transition-all-custom {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Premium Card Hover */
+/* =============================================
+   Premium Card Hover
+   ============================================= */
 .premium-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.4s ease, border-color 0.4s ease;
 }
 
 .premium-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -5px var(--shadow-premium);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+.dark .premium-card {
+  border-color: rgba(37,211,102,0.06) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.dark .premium-card:hover {
+  border-color: rgba(37,211,102,0.12) !important;
+  box-shadow: 
+    0 12px 40px rgba(0,0,0,0.35),
+    0 0 0 1px rgba(37,211,102,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
-::-webkit-scrollbar-thumb {
-  background: #E2E8F0;
-  border-radius: 10px;
-}
+/* =============================================
+   Custom Scrollbar
+   ============================================= */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #CBD5E1;
-}
-
+/* =============================================
+   Animations
+   ============================================= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+@keyframes subtleGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* =============================================
+   🌙 Dark Mode — Hardcoded Color Overrides
+   ============================================= */
+
+/* ---------- Text ---------- */
+.dark .text-slate-400 { color: #64748b; }
+.dark .text-slate-500 { color: #8b95a5; }
+.dark .text-slate-900 { color: #e8edf4; }
+.dark .text-red-500 { color: #f87171; }
+
+/* ---------- Backgrounds ---------- */
+.dark .bg-white { background-color: #0e131b; }
+.dark .bg-white\/70 { background-color: rgba(12,16,23,0.80); }
+.dark .bg-slate-50 { background-color: rgba(255,255,255,0.03); }
+.dark .bg-slate-100 { background-color: rgba(255,255,255,0.04); }
+.dark .bg-slate-100\/50 { background-color: rgba(255,255,255,0.03); }
+.dark .bg-slate-200 { background-color: #1c2433; }
+.dark .bg-gray-50 { background-color: rgba(255,255,255,0.03); }
+.dark .bg-gray-100 { background-color: rgba(255,255,255,0.04); }
+.dark .bg-gray-200 { background-color: #1c2433; }
+
+/* ---------- Emerald ---------- */
+.dark .bg-emerald-50 { background-color: rgba(37,211,102,0.10); }
+.dark .bg-emerald-50\/50 { background-color: rgba(37,211,102,0.06); }
+.dark .bg-emerald-100 { background-color: rgba(37,211,102,0.12); }
+.dark .text-emerald-600 { color: #4ade80; }
+.dark .text-emerald-700 { color: #4ade80; }
+
+/* ---------- Blue ---------- */
+.dark .bg-blue-500\/10 { background-color: rgba(96,165,250,0.12); }
+.dark .text-blue-600 { color: #60a5fa; }
+
+/* ---------- Amber ---------- */
+.dark .bg-amber-500\/10 { background-color: rgba(251,191,36,0.12); }
+.dark .text-amber-600 { color: #fbbf24; }
+
+/* ---------- Purple ---------- */
+.dark .bg-purple-500\/10 { background-color: rgba(192,132,252,0.12); }
+.dark .text-purple-600 { color: #c084fc; }
+
+/* ---------- Red ---------- */
+.dark .hover\:bg-red-50:hover { background-color: rgba(239,68,68,0.08); }
+.dark .bg-red-50 { background-color: rgba(239,68,68,0.08); }
+.dark .bg-red-100 { background-color: rgba(239,68,68,0.12); }
+.dark .text-red-600 { color: #f87171; }
+.dark .text-red-500 { color: #f87171; }
+
+/* ---------- Borders ---------- */
+.dark .border-slate-200\/10 { border-color: rgba(255,255,255,0.04); }
+.dark .border-slate-200\/20 { border-color: rgba(255,255,255,0.05); }
+.dark .border-slate-200 { border-color: #1c2433; }
+.dark .border-slate-100 { border-color: rgba(255,255,255,0.04); }
+.dark .border-gray-200 { border-color: #1c2433; }
+.dark .border-gray-100 { border-color: rgba(255,255,255,0.04); }
+.dark .border-white { border-color: #0e131b; }
+
+/* ---------- Shadows (modal/card glow) ---------- */
+.dark .shadow-sm { box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.dark .shadow-md { box-shadow: 0 4px 12px rgba(0,0,0,0.35); }
+.dark .shadow-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.dark .shadow-xl { box-shadow: 0 12px 36px rgba(0,0,0,0.45); }
+.dark .shadow-2xl { box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+
+/* ---------- Inbox-specific: chat bubble border ---------- */
+.dark .border-2.border-white { border-color: #0e131b; }
+
+/* ---------- Select / Option in dark mode ---------- */
+.dark select,
+.dark option {
+  background-color: #151b25;
+  color: #e8edf4;
+}
+
+/* ---------- Placeholder ---------- */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #5a6a78;
+}
+
+/* =============================================
+   ✨ Premium Dark Mode Toggle Switch
+   ============================================= */
+.dark-mode-toggle {
+  position: relative;
+  width: 56px;
+  height: 30px;
+  border-radius: 15px;
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  background: linear-gradient(135deg, #e8edf4 0%, #c8d4e2 100%);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  padding: 0 3px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.dark .dark-mode-toggle {
+  background: linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%);
+  border-color: rgba(37,211,102,0.15);
+  box-shadow: 
+    inset 0 1px 3px rgba(0,0,0,0.3),
+    0 0 12px rgba(37,211,102,0.08);
+}
+
+.dark-mode-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 15px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.dark .dark-mode-toggle::before {
+  background: radial-gradient(circle at 75% 50%, rgba(37,211,102,0.08) 0%, transparent 70%);
+  opacity: 1;
+}
+
+.dark-mode-toggle::after {
+  content: '';
+  position: relative;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #fbbf24, #f59e0b);
+  box-shadow: 
+    0 2px 6px rgba(245,158,11,0.4),
+    0 0 12px rgba(245,158,11,0.15),
+    inset 0 -1px 2px rgba(0,0,0,0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(0);
+}
+
+.dark .dark-mode-toggle::after {
+  transform: translateX(25px);
+  background: linear-gradient(145deg, #4ade80, #25d366);
+  box-shadow: 
+    0 2px 8px rgba(37,211,102,0.4),
+    0 0 16px rgba(37,211,102,0.15),
+    inset 0 -1px 2px rgba(0,0,0,0.15);
+}
+
+/* =============================================
+   🎨 Dark Mode — Extra Polish
+   ============================================= */
+
+/* Subtle ambient glow on the main content area */
+.dark main {
+  background: 
+    radial-gradient(ellipse 60% 50% at 0% 0%, rgba(37,211,102,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 100% 100%, rgba(99,102,241,0.02) 0%, transparent 50%);
+}
+
+/* Cards in dark mode get subtle gradient borders */
+.dark .bg-surface-container-lowest {
+  background: linear-gradient(180deg, rgba(21,27,37,1) 0%, rgba(14,19,27,1) 100%);
+}
+
+/* Performance chart bars glow in dark mode */
+.dark .bg-emerald-500\/20 {
+  background-color: rgba(37,211,102,0.15);
+  box-shadow: inset 0 0 8px rgba(37,211,102,0.05);
+}
+.dark .hover\:bg-emerald-500\/40:hover {
+  background-color: rgba(37,211,102,0.28);
+}
+
+/* Table rows in dark mode */
+.dark tr:hover td {
+  background-color: rgba(255,255,255,0.02);
+}
+.dark th {
+  border-color: #1c2433 !important;
+}
+.dark td {
+  border-color: rgba(255,255,255,0.03) !important;
+}
+
+/* Modal backdrops in dark mode */
+.dark .fixed.inset-0.bg-black\/40,
+.dark .fixed.inset-0.bg-black\/50 {
+  background-color: rgba(0,0,0,0.65) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Form inputs in dark mode */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="search"],
+.dark input[type="tel"],
+.dark input[type="url"],
+.dark input[type="date"],
+.dark input[type="datetime-local"],
+.dark textarea,
+.dark select {
+  background-color: var(--input-bg) !important;
+  color: var(--color-on-surface) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: rgba(37,211,102,0.3) !important;
+  box-shadow: 0 0 0 3px rgba(37,211,102,0.08) !important;
+}
+
+/* Buttons — gradient buttons keep their color, outline buttons adapt */
+.dark .bg-surface-container-highest {
+  background-color: #1c2433;
+}
+
+/* Dashed empty states in dark mode */
+.dark .border-dashed {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Active nav link on page content */
+.dark .ring-1.ring-primary\/5 {
+  box-shadow: 0 0 0 1px rgba(37,211,102,0.10);
+}
+
+/* WhatsApp chat-style message bubbles in dark Inbox */
+.dark .bg-primary\/5 {
+  background-color: rgba(37,211,102,0.06);
+}
+.dark .bg-primary\/10 {
+  background-color: rgba(37,211,102,0.10);
+}
+.dark .border-primary\/10 {
+  border-color: rgba(37,211,102,0.10);
+}
+
+/* Status dots glow in dark mode */
+.dark .bg-primary-container {
+  box-shadow: 0 0 6px rgba(37,211,102,0.3);
+}
+
+/* Link colors */
+.dark a.text-primary {
+  color: #4ade80;
+}
+.dark .text-primary {
+  color: #25d366;
+}
+
+/* Tooltip / popup in dark */
+.dark .bg-on-surface {
+  background-color: #e8edf4;
+}
+
+/* =============================================
+   3D Motion Graphics Utilities
+   ============================================= */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
 }

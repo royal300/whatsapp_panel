@@ -25,6 +25,10 @@ class TemplateController extends Controller
             $ws = new WhatsAppService($tenant);
             $res = $ws->syncTemplates();
 
+            if (isset($res['error'])) {
+                return response()->json(['message' => 'Meta API Error: ' . ($res['error']['message'] ?? 'Unknown Error')], 400);
+            }
+
             if (isset($res['data'])) {
                 foreach ($res['data'] as $mt) {
                     // Extract body text from components
@@ -61,18 +65,43 @@ class TemplateController extends Controller
             'name' => 'required|string|regex:/^[a-z0-9_]+$/',
             'language' => 'required|string',
             'category' => 'required|string',
-            'components' => 'required|array'
+            'components' => 'required',
+            'file' => 'nullable|file|max:16384'
         ]);
 
         $tenant = Auth::user()->tenant;
         
+        $components = $request->input('components');
+        if (is_string($components)) {
+            $components = json_decode($components, true);
+        }
+
         try {
             $ws = new WhatsAppService($tenant);
+            
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $handle = $ws->uploadMedia(
+                    file_get_contents($file->getRealPath()), 
+                    $file->getMimeType(), 
+                    $file->getSize()
+                );
+                
+                // Attach handle to the header component
+                foreach ($components as &$comp) {
+                    if ($comp['type'] === 'HEADER' && in_array($comp['format'], ['IMAGE', 'VIDEO', 'DOCUMENT'])) {
+                        $comp['example'] = [
+                            'header_handle' => [$handle]
+                        ];
+                    }
+                }
+            }
+
             $res = $ws->createTemplate(
                 $validated['name'],
                 $validated['category'],
                 $validated['language'],
-                $validated['components']
+                $components
             );
 
             if (isset($res['error'])) {
@@ -86,7 +115,7 @@ class TemplateController extends Controller
                 'language' => $validated['language'],
                 'category' => $validated['category'],
                 'status' => 'PENDING',
-                'content' => $validated['components']
+                'content' => $components
             ]);
 
             return response()->json($template, 201);

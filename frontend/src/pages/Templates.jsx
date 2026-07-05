@@ -7,6 +7,7 @@ const Templates = () => {
     const [loading, setLoading] = useState(true);
     const [syncLoading, setSyncLoading] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [viewTemplate, setViewTemplate] = useState(null);
     
     const initialFormState = {
         name: '',
@@ -18,10 +19,12 @@ const Templates = () => {
         footer_text: '',
         button_type: 'NONE',
         button_text: '',
-        button_url: ''
+        button_url: '',
+        button_phone_number: ''
     };
 
     const [newTemplate, setNewTemplate] = useState(initialFormState);
+    const [mediaFile, setMediaFile] = useState(null);
     const [formLoading, setFormLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
@@ -65,11 +68,30 @@ const Templates = () => {
             const header = { type: 'HEADER', format: newTemplate.header_type };
             if (newTemplate.header_type === 'TEXT') {
                 header.text = newTemplate.header_text;
+                // Check if text header has variables
+                const matches = [...newTemplate.header_text.matchAll(/\{\{(\d+)\}\}/g)];
+                if (matches.length > 0) {
+                    const maxVal = Math.max(...matches.map(m => parseInt(m[1], 10)));
+                    const samples = Array.from({ length: maxVal }, (_, i) => `sample_header_${i + 1}`);
+                    header.example = {
+                        header_text: [samples]
+                    };
+                }
             }
             components.push(header);
         }
 
-        components.push({ type: 'BODY', text: newTemplate.body_text });
+        const bodyComponent = { type: 'BODY', text: newTemplate.body_text };
+        // Check if body has variables
+        const bodyMatches = [...newTemplate.body_text.matchAll(/\{\{(\d+)\}\}/g)];
+        if (bodyMatches.length > 0) {
+            const maxVal = Math.max(...bodyMatches.map(m => parseInt(m[1], 10)));
+            const samples = Array.from({ length: maxVal }, (_, i) => `sample_value_${i + 1}`);
+            bodyComponent.example = {
+                body_text: [samples]
+            };
+        }
+        components.push(bodyComponent);
 
         if (newTemplate.footer_text) {
             components.push({ type: 'FOOTER', text: newTemplate.footer_text });
@@ -77,10 +99,21 @@ const Templates = () => {
 
         if (newTemplate.button_type !== 'NONE') {
             const btn = {
-                type: newTemplate.button_type === 'URL' ? 'URL' : 'QUICK_REPLY',
+                type: newTemplate.button_type,
                 text: newTemplate.button_text
             };
-            if (newTemplate.button_type === 'URL') btn.url = newTemplate.button_url;
+            if (newTemplate.button_type === 'URL') {
+                btn.url = newTemplate.button_url;
+                // Check if button URL has dynamic variables
+                const btnMatches = [...newTemplate.button_url.matchAll(/\{\{(\d+)\}\}/g)];
+                if (btnMatches.length > 0) {
+                    btn.example = ['https://example.com/sample_path'];
+                }
+            } else if (newTemplate.button_type === 'PHONE_NUMBER') {
+                btn.phone_number = newTemplate.button_phone_number;
+            } else if (newTemplate.button_type === 'OTP') {
+                btn.otp_type = 'COPY_CODE';
+            }
             
             components.push({
                 type: 'BUTTONS',
@@ -89,13 +122,25 @@ const Templates = () => {
         }
 
         try {
-            await api.post('/templates', {
-                ...newTemplate,
-                components: components
+            const formData = new FormData();
+            formData.append('name', newTemplate.name);
+            formData.append('category', newTemplate.category);
+            formData.append('language', newTemplate.language);
+            formData.append('components', JSON.stringify(components));
+            
+            if (mediaFile && ['IMAGE', 'VIDEO', 'DOCUMENT'].includes(newTemplate.header_type)) {
+                formData.append('file', mediaFile);
+            }
+
+            await api.post('/templates', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             setMessage({ type: 'success', text: 'Template submitted to Meta successfully!' });
             setShowCreateModal(false);
             setNewTemplate(initialFormState);
+            setMediaFile(null);
             fetchTemplates();
         } catch (err) {
             setMessage({ type: 'error', text: err.response?.data?.message || 'Failed to create template' });
@@ -110,6 +155,28 @@ const Templates = () => {
             case 'rejected': return 'bg-red-100 text-red-700';
             default: return 'bg-gray-100 text-gray-600';
         }
+    };
+
+    const renderFormattedText = (text) => {
+        if (!text) return null;
+        
+        let parts = text.split(/(\*\*.*?\*\*|\*.*?\*|_.*?_|~.*?~)/g);
+        
+        return parts.map((part, i) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return <strong key={i}>{part.slice(2, -2)}</strong>;
+            }
+            if (part.startsWith('*') && part.endsWith('*')) {
+                return <strong key={i}>{part.slice(1, -1)}</strong>;
+            }
+            if (part.startsWith('_') && part.endsWith('_')) {
+                return <em key={i}>{part.slice(1, -1)}</em>;
+            }
+            if (part.startsWith('~') && part.endsWith('~')) {
+                return <del key={i}>{part.slice(1, -1)}</del>;
+            }
+            return part;
+        });
     };
 
     const navigate = useNavigate();
@@ -234,13 +301,13 @@ const Templates = () => {
                             </p>
                             <div className="bg-surface-container-low p-4 rounded-2xl mb-6 relative overflow-hidden min-h-[6rem]">
                                 <p className="text-sm text-on-surface italic line-clamp-3">
-                                    "{template.content?.find(c => c.type === 'BODY')?.text || 'No content preview available'}"
+                                    "{renderFormattedText(template.content?.find(c => c.type === 'BODY')?.text || 'No content preview available')}"
                                 </p>
                             </div>
                             <div className="flex items-center justify-between mt-auto">
                                 <span className="text-[10px] font-black text-on-surface-variant opacity-40 uppercase tracking-widest">ID: {template.whatsapp_template_id?.slice(-8)}</span>
                                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="w-8 h-8 rounded-lg bg-surface-container hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center">
+                                    <button onClick={() => setViewTemplate(template)} className="w-8 h-8 rounded-lg bg-surface-container hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center">
                                         <span className="material-symbols-outlined text-sm">visibility</span>
                                     </button>
                                 </div>
@@ -292,7 +359,28 @@ const Templates = () => {
                                         <select 
                                             className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-sm font-bold focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
                                             value={newTemplate.category}
-                                            onChange={(e) => setNewTemplate({...newTemplate, category: e.target.value})}
+                                            onChange={(e) => {
+                                                const cat = e.target.value;
+                                                const updates = { category: cat };
+                                                
+                                                if (cat === 'UTILITY') {
+                                                    updates.body_text = 'Hi {{1}}, your order #{{2}} has been confirmed. Total amount: ₹{{3}}. We will notify you once it has been shipped.';
+                                                    updates.button_type = 'NONE';
+                                                    updates.footer_text = '';
+                                                } else if (cat === 'AUTHENTICATION') {
+                                                    updates.body_text = '{{1}} is your verification code. For your security, do not share this code.';
+                                                    updates.button_type = 'OTP';
+                                                    updates.button_text = 'Copy Code';
+                                                    updates.footer_text = 'Security Alert';
+                                                } else if (cat === 'MARKETING') {
+                                                    updates.body_text = 'Hi {{1}}, check out our new offer! Enjoy a {{2}}% discount on all items.';
+                                                    updates.button_type = 'URL';
+                                                    updates.button_text = 'Shop Now';
+                                                    updates.button_url = 'https://royal300.com/offer';
+                                                    updates.footer_text = 'Limited time offer';
+                                                }
+                                                setNewTemplate({...newTemplate, ...updates});
+                                            }}
                                         >
                                             <option value="MARKETING">Marketing</option>
                                             <option value="UTILITY">Utility</option>
@@ -341,9 +429,14 @@ const Templates = () => {
                                         />
                                     )}
                                     {['IMAGE', 'VIDEO', 'DOCUMENT'].includes(newTemplate.header_type) && (
-                                        <div className="bg-primary/5 border border-primary/10 rounded-2xl py-3 px-5 text-[10px] font-bold text-primary flex items-center gap-2">
-                                            <span className="material-symbols-outlined text-sm">info</span>
-                                            Static media handle will be created.
+                                        <div className="space-y-1">
+                                            <input 
+                                                type="file"
+                                                accept={newTemplate.header_type === 'IMAGE' ? 'image/*' : newTemplate.header_type === 'VIDEO' ? 'video/mp4' : 'application/pdf'}
+                                                className="w-full bg-surface-container-low border-none rounded-2xl py-3 px-5 text-xs font-bold focus:ring-2 focus:ring-primary/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                                                onChange={(e) => setMediaFile(e.target.files[0])}
+                                            />
+                                            <p className="text-[10px] text-on-surface-variant italic ml-1">Upload a sample file for Meta verification.</p>
                                         </div>
                                     )}
                                 </div>
@@ -397,6 +490,8 @@ const Templates = () => {
                                         <option value="NONE">None</option>
                                         <option value="QUICK_REPLY">Quick Reply (User taps to send text)</option>
                                         <option value="URL">Visit Website (External link)</option>
+                                        <option value="PHONE_NUMBER">Call Phone Number (User taps to call)</option>
+                                        <option value="OTP">Copy Code (Authentication Only)</option>
                                     </select>
                                     
                                     {newTemplate.button_type !== 'NONE' && (
@@ -417,6 +512,15 @@ const Templates = () => {
                                                     onChange={(e) => setNewTemplate({...newTemplate, button_url: e.target.value})}
                                                 />
                                             )}
+                                            {newTemplate.button_type === 'PHONE_NUMBER' && (
+                                                <input 
+                                                    className="bg-surface-container-low border-none rounded-2xl py-3 px-5 text-xs font-bold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                    placeholder="Phone Number (e.g. +16505551234)"
+                                                    required
+                                                    value={newTemplate.button_phone_number}
+                                                    onChange={(e) => setNewTemplate({...newTemplate, button_phone_number: e.target.value})}
+                                                />
+                                            )}
                                         </div>
                                     )}
                                 </div>
@@ -432,6 +536,75 @@ const Templates = () => {
                             >
                                 {formLoading ? 'Submitting...' : 'Submit to Meta'}
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* View Template Modal */}
+            {viewTemplate && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 backdrop-blur-sm bg-surface/80">
+                    <div className="bg-surface-container-lowest w-full max-w-2xl rounded-[3rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                        <div className="p-10 pb-6 flex justify-between items-start border-b border-outline-variant/10">
+                            <div>
+                                <div className="flex items-center gap-3 mb-2">
+                                    <h3 className="font-headline font-extrabold text-3xl">{viewTemplate.name}</h3>
+                                    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full ${getStatusStyle(viewTemplate.status)}`}>
+                                        <span className="text-[10px] font-bold uppercase tracking-widest">{viewTemplate.status}</span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 text-xs font-bold text-on-surface-variant uppercase tracking-widest">
+                                    <span>{viewTemplate.category}</span>
+                                    <span>•</span>
+                                    <span>{viewTemplate.language}</span>
+                                </div>
+                            </div>
+                            <button onClick={() => setViewTemplate(null)} className="w-12 h-12 rounded-full bg-surface-container hover:bg-surface-container-highest transition-colors flex items-center justify-center text-on-surface">
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+                        
+                        <div className="p-10 overflow-y-auto flex flex-col gap-8 custom-scrollbar">
+                            {viewTemplate.content?.map((component, idx) => (
+                                <div key={idx} className="bg-surface-container-low p-6 rounded-3xl">
+                                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-3 opacity-80">{component.type}</p>
+                                    
+                                    {component.type === 'HEADER' && (
+                                        <div className="text-on-surface font-medium">
+                                            {component.format === 'TEXT' ? component.text : (
+                                                <div className="flex items-center gap-2 text-secondary">
+                                                    <span className="material-symbols-outlined text-xl">attach_file</span>
+                                                    <span>Media ({component.format}) required when sending.</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {(component.type === 'BODY' || component.type === 'FOOTER') && (
+                                        <div className="text-on-surface whitespace-pre-wrap leading-relaxed">
+                                            {renderFormattedText(component.text)}
+                                        </div>
+                                    )}
+
+                                    {component.type === 'BUTTONS' && (
+                                        <div className="flex flex-col gap-3">
+                                            {component.buttons?.map((btn, btnIdx) => (
+                                                <div key={btnIdx} className="flex items-center justify-between bg-surface-container-highest p-4 rounded-2xl">
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="material-symbols-outlined text-primary/70">
+                                                            {btn.type === 'URL' ? 'link' : btn.type === 'PHONE_NUMBER' ? 'call' : 'reply'}
+                                                        </span>
+                                                        <span className="font-bold text-sm">{btn.text}</span>
+                                                    </div>
+                                                    <span className="text-xs text-on-surface-variant font-medium truncate max-w-[200px]">
+                                                        {btn.url || btn.phone_number || btn.type}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

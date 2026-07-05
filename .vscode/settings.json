@@ -1,0 +1,11 @@
+{
+    "phpcs.enable": false,
+    "phpsab.enable": false,
+    "php.validate.enable": false,
+    "php.problems.exclude": {
+        "**": true
+    },
+    "python.terminal.activateEnvironment": false,
+    "phpResolver.phpSnifferCommand": "",
+    "phpResolver.phpBeautifierCommand": ""
+}

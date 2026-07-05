@@ -7,6 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -15,8 +16,12 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            await login(email, password);
-            navigate('/dashboard');
+            const data = await login(email, password);
+            if (data.user?.role === 'agent') {
+                navigate('/inbox');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
         } finally {
@@ -115,11 +120,20 @@ const Login = () => {
                                         className="w-full pl-12 pr-12 py-4 bg-surface-container-highest border-0 rounded-xl focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-300 font-body text-sm" 
                                         id="password" 
                                         placeholder="••••••••" 
-                                        type="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
                                     />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors focus:outline-none"
+                                    >
+                                        <span className="material-symbols-outlined text-xl">
+                                            {showPassword ? 'visibility' : 'visibility_off'}
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
 

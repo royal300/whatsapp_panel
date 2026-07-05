@@ -11,9 +11,46 @@ const Settings = () => {
         pusher_app_secret: '',
         pusher_app_cluster: ''
     });
+    const [profileData, setProfileData] = useState({
+        verified_name: '',
+        about: '',
+        address: '',
+        description: '',
+        email: '',
+        vertical: '',
+        websites: [''],
+        profile_picture_url: ''
+    });
     const [loading, setLoading] = useState(false);
+    const [syncing, setSyncing] = useState(false);
     const [message, setMessage] = useState('');
     const [activeTab, setActiveTab] = useState('api'); // api, pusher, profile
+    const [profilePictureFile, setProfilePictureFile] = useState(null);
+    const [profilePicturePreview, setProfilePicturePreview] = useState(null);
+
+    const fetchProfile = async () => {
+        setSyncing(true);
+        try {
+            const response = await api.get('/tenant/business-profile');
+            if (response.data && response.data.data && response.data.data[0]) {
+                const p = response.data.data[0];
+                setProfileData({
+                    verified_name: p.verified_name || '',
+                    about: p.about || '',
+                    address: p.address || '',
+                    description: p.description || '',
+                    email: p.email || '',
+                    vertical: p.vertical || '',
+                    websites: p.websites || [''],
+                    profile_picture_url: p.profile_picture_url || ''
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch business profile', err);
+        } finally {
+            setSyncing(false);
+        }
+    };
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -33,7 +70,9 @@ const Settings = () => {
                 console.error('Failed to fetch settings', err);
             }
         };
+
         fetchSettings();
+        fetchProfile();
     }, []);
 
     const handleSubmit = async (e) => {
@@ -41,7 +80,32 @@ const Settings = () => {
         setLoading(true);
         setMessage('');
         try {
-            await api.post('/tenant/settings', formData);
+            if (activeTab === 'profile') {
+                if (profilePictureFile) {
+                    const fd = new FormData();
+                    Object.keys(profileData).forEach(key => {
+                        if (key === 'websites') {
+                            profileData[key].forEach(site => {
+                                if (site.trim()) fd.append('websites[]', site);
+                            });
+                        } else {
+                            fd.append(key, profileData[key]);
+                        }
+                    });
+                    fd.append('profile_picture', profilePictureFile);
+                    await api.post('/tenant/business-profile', fd, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    });
+                    setProfilePictureFile(null);
+                    setProfilePicturePreview(null);
+                } else {
+                    await api.post('/tenant/business-profile', profileData);
+                }
+                // Refresh profile to get updated URL
+                fetchProfile();
+            } else {
+                await api.post('/tenant/settings', formData);
+            }
             setMessage('Configuration updated successfully!');
             setTimeout(() => setMessage(''), 5000);
         } catch (err) {
@@ -214,17 +278,161 @@ const Settings = () => {
 
                         {activeTab === 'profile' && (
                             <div className="space-y-8 animate-in fade-in duration-500">
-                                <div>
-                                    <h3 className="text-xl font-headline font-extrabold text-on-surface mb-1">Business Profile</h3>
-                                    <p className="text-sm text-on-surface-variant font-medium">Update your business details that appear to customers on WhatsApp.</p>
-                                </div>
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-xl font-headline font-extrabold text-on-surface mb-1">Business Profile</h3>
+                                                <p className="text-sm text-on-surface-variant font-medium">Update your business details that appear to customers on WhatsApp.</p>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <button 
+                                                    type="button"
+                                                    onClick={fetchProfile}
+                                                    disabled={syncing}
+                                                    className="px-6 py-3 rounded-2xl bg-surface-container-low text-primary font-headline font-bold text-xs hover:bg-surface-container-highest transition-all flex items-center gap-2 border border-primary/20"
+                                                >
+                                                    <span className={`material-symbols-outlined text-lg ${syncing ? 'animate-spin' : ''}`}>sync</span>
+                                                    {syncing ? 'Fetching...' : 'Fetch from Meta'}
+                                                </button>
+                                                <div className="relative group cursor-pointer w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-lg bg-surface-container-low"
+                                                     onClick={() => document.getElementById('profilePicUpload').click()}
+                                                >
+                                                    <img 
+                                                        src={profilePicturePreview || profileData.profile_picture_url || 'https://ui-avatars.com/api/?name=W&background=random'} 
+                                                        alt="Profile" 
+                                                        className="w-full h-full object-cover transition-opacity group-hover:opacity-50" 
+                                                        onError={(e) => {
+                                                            e.target.src = 'https://ui-avatars.com/api/?name=W&background=random';
+                                                        }}
+                                                    />
+                                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <span className="material-symbols-outlined text-white drop-shadow-md">photo_camera</span>
+                                                    </div>
+                                                    <input 
+                                                        type="file" 
+                                                        id="profilePicUpload" 
+                                                        className="hidden" 
+                                                        accept="image/jpeg, image/png"
+                                                        onChange={(e) => {
+                                                            if (e.target.files && e.target.files[0]) {
+                                                                const file = e.target.files[0];
+                                                                setProfilePictureFile(file);
+                                                                setProfilePicturePreview(URL.createObjectURL(file));
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
                                 
-                                <div className="p-12 border-2 border-dashed border-outline-variant/30 rounded-[2rem] text-center flex flex-col items-center gap-4">
-                                    <div className="w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center text-on-surface-variant opacity-20">
-                                        <span className="material-symbols-outlined text-5xl">storefront</span>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Display Name (Verified)</label>
+                                        <input 
+                                            type="text"
+                                            readOnly
+                                            className="w-full bg-surface-container-low/50 border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-0 outline-none cursor-not-allowed opacity-70"
+                                            placeholder="Sync from Meta to load..."
+                                            value={profileData.verified_name}
+                                        />
+                                        <p className="text-[10px] text-on-surface-variant font-medium px-1 italic">This name is verified by Meta and cannot be changed here.</p>
                                     </div>
-                                    <p className="text-on-surface-variant font-bold text-sm">Business profile management coming soon.</p>
-                                    <p className="text-xs text-on-surface-variant/60 max-w-[240px]">This feature will allow you to sync your WhatsApp display name and profile picture directly from here.</p>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">About (Status)</label>
+                                        <input 
+                                            type="text"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                            placeholder="Hello! I am using WhatsApp"
+                                            value={profileData.about}
+                                            onChange={(e) => setProfileData({...profileData, about: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Category</label>
+                                        <select 
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all appearance-none"
+                                            value={profileData.vertical}
+                                            onChange={(e) => setProfileData({...profileData, vertical: e.target.value})}
+                                        >
+                                            <option value="">Select Category</option>
+                                            <option value="APPAREL">Apparel & Accessories</option>
+                                            <option value="BEAUTY">Beauty, Cosmetics & Personal Care</option>
+                                            <option value="EDUCATION">Education</option>
+                                            <option value="FINANCE">Finance</option>
+                                            <option value="FOOD_BEVERAGE">Food & Beverage</option>
+                                            <option value="HEALTH">Healthcare</option>
+                                            <option value="HOTEL">Hotel & Lodging</option>
+                                            <option value="PROF_SERVICES">Professional Services</option>
+                                            <option value="RETAIL">Retail</option>
+                                            <option value="TRAVEL">Travel & Transportation</option>
+                                            <option value="OTHER">Other</option>
+                                        </select>
+                                    </div>
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Description</label>
+                                        <textarea 
+                                            rows="3"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                                            placeholder="Tell customers about your business..."
+                                            value={profileData.description}
+                                            onChange={(e) => setProfileData({...profileData, description: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Email</label>
+                                        <input 
+                                            type="email"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                            placeholder="contact@business.com"
+                                            value={profileData.email}
+                                            onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Business Address</label>
+                                        <input 
+                                            type="text"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                            placeholder="123 Business Way, Suite 100"
+                                            value={profileData.address}
+                                            onChange={(e) => setProfileData({...profileData, address: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Websites</label>
+                                        {profileData.websites.map((site, idx) => (
+                                            <div key={idx} className="flex gap-2 mb-2">
+                                                <input 
+                                                    type="text"
+                                                    className="flex-1 bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                                    placeholder="https://..."
+                                                    value={site}
+                                                    onChange={(e) => {
+                                                        const updated = [...profileData.websites];
+                                                        updated[idx] = e.target.value;
+                                                        setProfileData({...profileData, websites: updated});
+                                                    }}
+                                                />
+                                                {profileData.websites.length > 1 && (
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => setProfileData({...profileData, websites: profileData.websites.filter((_, i) => i !== idx)})}
+                                                        className="w-14 bg-error/10 text-error rounded-2xl flex items-center justify-center hover:bg-error/20 transition-all"
+                                                    >
+                                                        <span className="material-symbols-outlined">delete</span>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        {profileData.websites.length < 2 && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => setProfileData({...profileData, websites: [...profileData.websites, '']})}
+                                                className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline ml-1"
+                                            >
+                                                + Add Another Website
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         )}

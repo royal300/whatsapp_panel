@@ -16,7 +16,7 @@ class ChatController extends Controller
     {
         $tenantId = Auth::user()->tenant_id;
         return response()->json(
-            Chat::with(['contact', 'messages'])
+            Chat::with(['contact', 'messages', 'agent'])
                 ->where('tenant_id', $tenantId)
                 ->orderBy('updated_at', 'desc')
                 ->get()
@@ -60,7 +60,45 @@ class ChatController extends Controller
         }
     }
 
-    public function show(string $id) { /*...*/ }
-    public function update(Request $request, string $id) { /*...*/ }
-    public function destroy(string $id) { /*...*/ }
+    public function show(string $id)
+    {
+        $tenantId = Auth::user()->tenant_id;
+        $chat = Chat::with(['contact', 'messages', 'agent'])
+            ->where('tenant_id', $tenantId)
+            ->findOrFail($id);
+        return response()->json($chat);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $tenantId = Auth::user()->tenant_id;
+        $chat = Chat::where('tenant_id', $tenantId)->findOrFail($id);
+
+        $validated = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'status' => 'nullable|string|in:open,resolved,bot',
+        ]);
+
+        if (array_key_exists('user_id', $validated)) {
+            if (!empty($validated['user_id'])) {
+                $user = \App\Models\User::findOrFail($validated['user_id']);
+                if ($user->tenant_id !== $tenantId) {
+                    return response()->json(['message' => 'Agent does not belong to this team'], 403);
+                }
+            }
+        }
+
+        $chat->update($validated);
+
+        return response()->json($chat->load(['contact', 'messages', 'agent']));
+    }
+
+    public function destroy(string $id)
+    {
+        $tenantId = Auth::user()->tenant_id;
+        $chat = Chat::where('tenant_id', $tenantId)->findOrFail($id);
+        $chat->delete();
+
+        return response()->json(['message' => 'Chat deleted']);
+    }
 }

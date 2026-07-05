@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
@@ -10,7 +11,11 @@ import Campaigns from './pages/Campaigns';
 import Automation from './pages/Automation';
 import Templates from './pages/Templates';
 import Settings from './pages/Settings';
+import Analytics from './pages/Analytics';
+import Agents from './pages/Agents';
+import FlowBuilder from './pages/FlowBuilder';
 import Layout from './components/Layout';
+import Home from './pages/Home';
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -18,8 +23,15 @@ const PrivateRoute = ({ children }) => {
     return user ? children : <Navigate to="/login" />;
 };
 
+const AdminRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
+    return user && user.role === 'admin' ? children : <Navigate to="/inbox" />;
+};
+
 function App() {
     return (
+        <ThemeProvider>
         <AuthProvider>
             <Router>
                 <Routes>
@@ -30,7 +42,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Dashboard />
+                                    <AdminRoute>
+                                        <Dashboard />
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -50,7 +64,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Templates />
+                                    <AdminRoute>
+                                        <Templates />
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -70,7 +86,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Campaigns />
+                                    <AdminRoute>
+                                        <Campaigns />
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -80,7 +98,21 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Automation />
+                                    <AdminRoute>
+                                        <Automation />
+                                    </AdminRoute>
+                                </Layout>
+                            </PrivateRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/agents" 
+                        element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <AdminRoute>
+                                        <Agents />
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -90,15 +122,42 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Settings />
+                                    <AdminRoute>
+                                        <Settings />
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
                     />
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route 
+                        path="/analytics" 
+                        element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <AdminRoute>
+                                        <Analytics />
+                                    </AdminRoute>
+                                </Layout>
+                            </PrivateRoute>
+                        } 
+                    />
+                    <Route 
+                        path="/flow-builder" 
+                        element={
+                            <PrivateRoute>
+                                <Layout>
+                                    <AdminRoute>
+                                        <FlowBuilder />
+                                    </AdminRoute>
+                                </Layout>
+                            </PrivateRoute>
+                        } 
+                    />
+                    <Route path="/" element={<Home />} />
                 </Routes>
             </Router>
         </AuthProvider>
+        </ThemeProvider>
     );
 }
 

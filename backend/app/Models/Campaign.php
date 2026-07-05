@@ -14,7 +14,8 @@ class Campaign extends Model
         'status',
         'error_message',
         'audience_count',
-        'scheduled_at'
+        'scheduled_at',
+        'media_url'
     ];
 
     protected $casts = [

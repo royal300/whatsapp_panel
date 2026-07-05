@@ -63,7 +63,7 @@ A comprehensive WhatsApp Marketing and Team Inbox solution built on the Meta Wha
 ## 🔑 Access Credentials (Dev)
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| **Admin** | `admin@royal300.com` | `password` |
+| **Admin** | `admin@royal300.com` | `password123` |
 | **Manager** | `royal300ad@gmail.com` | `password` |
 
 ---

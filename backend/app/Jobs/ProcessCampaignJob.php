@@ -4,10 +4,13 @@ namespace App\Jobs;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class ProcessCampaignJob implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -21,6 +24,10 @@ class ProcessCampaignJob implements ShouldQueue
      */
     public function handle(): void
     {
+        // Refresh the campaign model to ensure we have the latest token and status
+        $this->campaign->refresh();
+        $this->campaign->load('tenant', 'template');
+        
         $tenant = $this->campaign->tenant;
         $template = $this->campaign->template;
         $whatsapp = new \App\Services\WhatsAppService($tenant);
@@ -44,6 +51,28 @@ class ProcessCampaignJob implements ShouldQueue
             try {
                 // Map variables to Meta component format
                 $formattedComponents = [];
+
+                if ($this->campaign->media_url && is_array($template->content)) {
+                    $headerFormat = null;
+                    foreach ($template->content as $c) {
+                        if (isset($c['type']) && $c['type'] === 'HEADER' && in_array($c['format'], ['IMAGE', 'VIDEO', 'DOCUMENT'])) {
+                            $headerFormat = strtolower($c['format']);
+                            break;
+                        }
+                    }
+                    if ($headerFormat) {
+                        $formattedComponents[] = [
+                            'type' => 'header',
+                            'parameters' => [
+                                [
+                                    'type' => $headerFormat,
+                                    $headerFormat => ['link' => $this->campaign->media_url]
+                                ]
+                            ]
+                        ];
+                    }
+                }
+
                 if (!empty($variables)) {
                     $parameters = [];
                     foreach ($variables as $val) {
@@ -53,10 +82,32 @@ class ProcessCampaignJob implements ShouldQueue
                         'type' => 'body',
                         'parameters' => $parameters
                     ];
+
+                    // Meta requires OTP button parameters if the template uses a COPY_CODE button
+                    if (is_array($template->content)) {
+                        foreach ($template->content as $c) {
+                            if (isset($c['type']) && $c['type'] === 'BUTTONS' && isset($c['buttons'])) {
+                                foreach ($c['buttons'] as $idx => $btn) {
+                                    if (isset($btn['type']) && $btn['type'] === 'OTP') {
+                                        // The OTP code is always the first variable
+                                        $otpCode = (string)$variables[0];
+                                        $formattedComponents[] = [
+                                            'type' => 'button',
+                                            'sub_type' => 'url',
+                                            'index' => (string)$idx,
+                                            'parameters' => [
+                                                ['type' => 'text', 'text' => $otpCode]
+                                            ]
+                                        ];
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 $response = $whatsapp->sendTemplateMessage(
-                    $phoneNumber,
+                    ltrim($phoneNumber, '+'),
                     $template->name,
                     $template->language,
                     $formattedComponents
@@ -83,9 +134,12 @@ class ProcessCampaignJob implements ShouldQueue
                 ]);
 
                 try {
+                    // Normalize phone number to include +
+                    $normalizedPhone = str_starts_with($phoneNumber, '+') ? $phoneNumber : '+' . $phoneNumber;
+
                     // SYNC TO TEAM INBOX
                     $contact = \App\Models\Contact::firstOrCreate(
-                        ['phone_number' => $phoneNumber, 'tenant_id' => $tenant->id],
+                        ['phone_number' => $normalizedPhone, 'tenant_id' => $tenant->id],
                         ['name' => 'WhatsApp User']
                     );
 
@@ -101,6 +155,23 @@ class ProcessCampaignJob implements ShouldQueue
                     foreach ($variables as $index => $value) {
                         $placeholder = '{{' . ($index + 1) . '}}';
                         $bodyText = str_replace($placeholder, $value, $bodyText);
+                    }
+
+                    $footerText = collect($template->content)->where('type', 'FOOTER')->first()['text'] ?? null;
+                    if ($footerText) {
+                        $bodyText .= "\n\n_{$footerText}_";
+                    }
+
+                    $buttonsComponent = collect($template->content)->where('type', 'BUTTONS')->first();
+                    if ($buttonsComponent && isset($buttonsComponent['buttons'])) {
+                        $bodyText .= "\n\n";
+                        foreach ($buttonsComponent['buttons'] as $btn) {
+                            $bodyText .= "🔘 {$btn['text']}  ";
+                        }
+                    }
+
+                    if (!empty($this->campaign->media_url)) {
+                        $bodyText = "![media]({$this->campaign->media_url})\n\n" . $bodyText;
                     }
 
                     $message = \App\Models\Message::create([

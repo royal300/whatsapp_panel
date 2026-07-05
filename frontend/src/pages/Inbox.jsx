@@ -8,10 +8,16 @@ window.Pusher = Pusher;
 const Inbox = () => {
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState(null);
+    const selectedChatRef = React.useRef(null);
+    useEffect(() => {
+        selectedChatRef.current = selectedChat;
+    }, [selectedChat]);
+
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState('');
     const [loading, setLoading] = useState(false);
     const [echoInstance, setEchoInstance] = useState(null);
+    const [agents, setAgents] = useState([]);
     const messagesEndRef = React.useRef(null);
 
     // Initialize Echo with Tenant Settings
@@ -26,7 +32,7 @@ const Inbox = () => {
                         key: tenant.pusher_app_key, // Kept 'tenant' as it's defined above
                         cluster: tenant.pusher_app_cluster, // Kept 'tenant' as it's defined above
                         forceTLS: true,
-                        authEndpoint: 'http://127.0.0.1:8001/api/broadcasting/auth', // Standard Laravel
+                        authEndpoint: window.location.origin.includes('localhost') ? 'http://127.0.0.1:8001/api/broadcasting/auth' : '/api/broadcasting/auth',
                         auth: {
                             headers: {
                                 Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -34,9 +40,9 @@ const Inbox = () => {
                         }
                     });
 
-                    setEchoInstance(echo);
+                    setEchoInstance(window.Echo);
 
-                    echo.private(`tenant.${tenant.id}`)
+                    window.Echo.private(`tenant.${tenant.id}`)
                         .listen('MessageReceived', (e) => {
                             console.log('Real-time message received:', e.message);
                             handleIncomingMessage(e.message);
@@ -54,8 +60,11 @@ const Inbox = () => {
     const handleIncomingMessage = (newMsg) => {
         // Update messages if this chat is selected
         setMessages(prev => {
-            if (prev.some(m => m.id === newMsg.id)) return prev;
-            return [...prev, newMsg];
+            if (selectedChatRef.current && selectedChatRef.current.id === newMsg.chat_id) {
+                if (prev.some(m => m.id === newMsg.id)) return prev;
+                return [...prev, newMsg];
+            }
+            return prev;
         });
 
         // Update chats list (move to top and update snippet)
@@ -65,11 +74,13 @@ const Inbox = () => {
                 // Fetch chats again if it's a new contact
                 return prev;
             }
+            const isUnread = newMsg.sender_type === 'contact' && (!selectedChatRef.current || selectedChatRef.current.id !== newMsg.chat_id);
             const updatedChats = [...prev];
             updatedChats[index] = {
                 ...updatedChats[index],
                 messages: [...(updatedChats[index].messages || []), newMsg],
-                updated_at: new Date().toISOString()
+                updated_at: new Date().toISOString(),
+                has_unread: updatedChats[index].has_unread || isUnread
             };
             return updatedChats.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
         });
@@ -84,12 +95,11 @@ const Inbox = () => {
     }, [messages]);
 
     useEffect(() => {
-        const fetchChats = async () => {
+        const fetchChatsAndAgents = async () => {
             try {
                 const res = await api.get('/chats');
                 setChats(res.data);
                 
-                // If a chat is selected, update it too
                 if (selectedChat) {
                     const updatedSelected = res.data.find(c => c.id === selectedChat.id);
                     if (updatedSelected) {
@@ -98,13 +108,30 @@ const Inbox = () => {
                 } else if (res.data.length > 0) {
                     setSelectedChat(res.data[0]);
                 }
+
+                const agentsRes = await api.get('/agents');
+                setAgents(agentsRes.data);
             } catch (err) {
-                console.error('Failed to fetch chats', err);
+                console.error('Failed to fetch chats or agents', err);
             }
         };
 
-        fetchChats();
+        fetchChatsAndAgents();
     }, []);
+
+    const handleAssignAgent = async (agentId) => {
+        if (!selectedChat) return;
+        try {
+            const res = await api.put(`/chats/${selectedChat.id}`, {
+                user_id: agentId ? parseInt(agentId) : null
+            });
+            setSelectedChat(res.data);
+            setChats(chats.map(c => c.id === selectedChat.id ? res.data : c));
+        } catch (err) {
+            console.error('Failed to assign agent', err);
+            alert('Failed to assign agent');
+        }
+    };
 
     useEffect(() => {
         if (selectedChat) {
@@ -129,8 +156,8 @@ const Inbox = () => {
 
     return (
         <div className="flex bg-surface-container h-[calc(100vh-100px)] -mt-6 -mx-8 overflow-hidden">
-            {/* Left Column: Chat List (25%) */}
-            <section className="w-1/4 bg-surface-container-low flex flex-col h-full border-r border-outline-variant/10">
+            {/* Left Column: Chat List */}
+            <section className="w-[340px] flex-shrink-0 bg-surface-container-low flex flex-col h-full border-r border-outline-variant/10">
                 <div className="p-6 space-y-4">
                     <div className="relative group">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
@@ -147,7 +174,12 @@ const Inbox = () => {
                         chats.map(chat => (
                             <div 
                                 key={chat.id}
-                                onClick={() => setSelectedChat(chat)}
+                                onClick={() => {
+                                    setSelectedChat(chat);
+                                    if (chat.has_unread) {
+                                        setChats(prev => prev.map(c => c.id === chat.id ? { ...c, has_unread: false } : c));
+                                    }
+                                }}
                                 className={`mx-3 mb-2 p-4 rounded-2xl flex gap-3 cursor-pointer transition-all group ${
                                     selectedChat?.id === chat.id 
                                     ? 'bg-surface-container-lowest shadow-sm ring-1 ring-primary/5' 
@@ -161,15 +193,26 @@ const Inbox = () => {
                                     <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-primary-container border-2 border-white rounded-full"></div>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="flex justify-between items-start mb-0.5">
-                                        <h3 className="font-semibold text-sm truncate">{chat.contact?.first_name || chat.contact?.phone_number}</h3>
-                                        <span className="text-[10px] text-on-surface-variant font-medium">
+                                    <div className="flex justify-between items-start mb-0.5 gap-2">
+                                        <h3 className={`text-sm truncate flex-1 transition-all ${chat.has_unread ? 'font-black text-on-surface' : 'font-semibold text-on-surface'}`}>{chat.contact?.first_name || chat.contact?.phone_number}</h3>
+                                        <span className="text-[10px] text-on-surface-variant font-medium whitespace-nowrap">
                                             {chat.messages?.length > 0 ? new Date(chat.messages[chat.messages.length - 1].created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-on-surface-variant truncate">
-                                        {chat.messages?.[chat.messages.length - 1]?.message_body || 'No messages yet'}
-                                    </p>
+                                    <div className="flex justify-between items-center gap-2">
+                                        <p className={`text-xs truncate flex-1 transition-all ${chat.has_unread ? 'font-bold text-on-surface' : 'text-on-surface-variant'}`}>
+                                            {(chat.messages?.[chat.messages.length - 1]?.message_body || 'No messages yet')
+                                                .replace(/!\[.*?\]\(.*?\)/g, '[Media] ')
+                                                .replace(/\*/g, '')
+                                                .replace(/_/g, '')
+                                                .replace(/~/g, '')}
+                                        </p>
+                                        {chat.agent && (
+                                            <span className="flex-shrink-0 text-[9px] font-black bg-primary/10 text-primary px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                                {chat.agent.name.split(' ')[0]}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         ))
@@ -177,8 +220,8 @@ const Inbox = () => {
                 </div>
             </section>
 
-            {/* Middle Column: Chat Window (50%) */}
-            <section className="w-1/2 bg-surface-container flex flex-col h-full shadow-[inset_0_0_20px_rgba(20,29,36,0.02)]">
+            {/* Middle Column: Chat Window */}
+            <section className="flex-1 min-w-0 bg-surface-container flex flex-col h-full shadow-[inset_0_0_20px_rgba(20,29,36,0.02)]">
                 {selectedChat ? (
                     <>
                         {/* Chat Header */}
@@ -198,8 +241,23 @@ const Inbox = () => {
                                 </div>
                             </div>
                             <div className="flex items-center gap-3">
+                                {/* Agent Assignment Dropdown */}
+                                <div className="flex items-center gap-1.5 bg-surface-container-highest/50 border border-outline-variant/10 rounded-xl px-3 py-1.5">
+                                    <span className="material-symbols-outlined text-sm text-on-surface-variant">support_agent</span>
+                                    <select 
+                                        className="bg-transparent border-none text-xs font-bold focus:ring-0 cursor-pointer text-on-surface-variant outline-none py-0 pl-1 pr-6"
+                                        value={selectedChat.user_id || ''}
+                                        onChange={(e) => handleAssignAgent(e.target.value)}
+                                    >
+                                        <option value="">Unassigned</option>
+                                        {agents.map(agent => (
+                                            <option key={agent.id} value={agent.id}>{agent.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <button className="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-colors">
-                                    <span className="material-symbols-outlined">search</span>
+                                     <span className="material-symbols-outlined">search</span>
                                 </button>
                                 <button className="px-5 py-2 bg-primary text-white text-xs font-bold rounded-xl shadow-md shadow-primary/10 hover:shadow-lg transition-all active:scale-95">
                                     Resolve
@@ -220,8 +278,16 @@ const Inbox = () => {
                                         msg.sender_type === 'contact' 
                                             ? 'bg-surface-container-lowest text-on-surface rounded-tl-none' 
                                             : 'bg-primary/5 border border-primary/10 text-on-surface rounded-tr-none'
-                                    }`}>
-                                        {msg.message_body}
+                                    }`} dangerouslySetInnerHTML={{
+                                        __html: (msg.message_body || '')
+                                            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                                            .replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" class="w-full max-w-sm rounded-lg mb-2 object-cover border border-white/10 shadow-sm" />')
+                                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                            .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+                                            .replace(/_(.*?)_/g, '<em>$1</em>')
+                                            .replace(/~(.*?)~/g, '<del>$1</del>')
+                                            .replace(/\n/g, '<br />')
+                                    }}>
                                     </div>
                                     <div className="flex items-center gap-1.5 px-1 font-medium opacity-60">
                                         <span className="text-[10px] text-on-surface-variant">
@@ -281,8 +347,8 @@ const Inbox = () => {
                 )}
             </section>
 
-            {/* Right Column: Contact Info (25%) */}
-            <section className="w-1/4 bg-surface-container-low flex flex-col h-full overflow-y-auto border-l border-outline-variant/10">
+            {/* Right Column: Contact Info */}
+            <section className="w-[300px] flex-shrink-0 bg-surface-container-low flex flex-col h-full overflow-y-auto border-l border-outline-variant/10">
                 <header className="p-6 h-20 flex items-center flex-shrink-0">
                     <h2 className="font-headline font-bold text-lg text-on-surface">Contact Info</h2>
                 </header>

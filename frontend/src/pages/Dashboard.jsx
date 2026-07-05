@@ -24,13 +24,39 @@ const Dashboard = () => {
                 ]);
                 
                 const campaigns = campaignsRes.data || [];
-                const totalSent = campaigns.reduce((acc, c) => acc + (c.audience_count || 0), 0);
-                const totalRead = campaigns.reduce((acc, c) => acc + (c.logs?.filter(l => l.status === 'read').length || 0), 0);
+                
+                let exactCost = 0;
+                let totalSent = 0;
+                let totalRead = 0;
+
+                campaigns.forEach(c => {
+                    const sentCount = c.audience_count || 0;
+                    totalSent += sentCount;
+                    totalRead += (c.logs?.filter(l => l.status === 'read').length || 0);
+
+                    // India Exact Rates (approx based on Meta rate card)
+                    const category = c.template?.category || 'UTILITY';
+                    let costPerMessage = 0;
+                    
+                    if (category === 'MARKETING') {
+                        costPerMessage = 0.88;
+                    } else if (category === 'UTILITY') {
+                        costPerMessage = 0.35;
+                    } else if (category === 'AUTHENTICATION') {
+                        costPerMessage = 0.35;
+                    } else {
+                        costPerMessage = 0.35; // Fallback
+                    }
+
+                    exactCost += (sentCount * costPerMessage);
+                });
+
                 const readRate = totalSent > 0 ? (totalRead / totalSent) * 100 : 0;
 
                 setStats({
                     contacts: contactsRes.data.length || 0,
                     totalSent,
+                    exactCost,
                     readRate,
                     campaigns: campaigns.slice(0, 3) 
                 });
@@ -77,7 +103,7 @@ const Dashboard = () => {
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
                             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
                         </div>
-                        <span className="flex items-center text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)' }}>
                             <span className="material-symbols-outlined text-sm mr-1">check</span>
                             Active
                         </span>
@@ -91,7 +117,7 @@ const Dashboard = () => {
                         <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
                             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>person_add</span>
                         </div>
-                        <span className="flex items-center text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)' }}>
                             <span className="material-symbols-outlined text-sm mr-1">trending_up</span>
                             Grow
                         </span>
@@ -105,7 +131,7 @@ const Dashboard = () => {
                         <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
                             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
                         </div>
-                        <span className="flex items-center text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full">
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-emerald-bg)', color: 'var(--badge-emerald-text)' }}>
                             <span className="material-symbols-outlined text-sm mr-1">insights</span>
                             Healthy
                         </span>
@@ -117,14 +143,14 @@ const Dashboard = () => {
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-premium border border-outline-variant/5 premium-card">
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
-                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>account_balance_wallet</span>
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
                         </div>
-                        <span className="flex items-center text-slate-500 text-xs font-bold bg-slate-100 px-2 py-1 rounded-full">
-                            Quota
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)' }}>
+                            Estimate
                         </span>
                     </div>
-                    <p className="text-on-surface-variant text-sm font-medium">Active Campaigns</p>
-                    <h3 className="text-3xl font-extrabold text-on-surface mt-1">{loading ? '...' : stats.campaigns.length}</h3>
+                    <p className="text-on-surface-variant text-sm font-medium">Exact Meta Usage Cost</p>
+                    <h3 className="text-3xl font-extrabold text-on-surface mt-1">{loading ? '...' : `₹${(stats.exactCost || 0).toFixed(2)}`}</h3>
                 </div>
             </div>
 

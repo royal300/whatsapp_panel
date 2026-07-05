@@ -17,7 +17,8 @@ class Tenant extends Model
         'pusher_app_id',
         'pusher_app_key',
         'pusher_app_secret',
-        'pusher_app_cluster'
+        'pusher_app_cluster',
+        'ai_quick_replies_enabled'
     ];
 
     public function users()
