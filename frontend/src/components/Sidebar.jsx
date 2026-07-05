@@ -16,6 +16,14 @@ const Sidebar = () => {
         menuItems = [
             { name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
             { name: 'Tenants Management', icon: 'admin_panel_settings', path: '/super-admin' },
+            { name: 'Contacts', icon: 'contacts', path: '/contacts' },
+            ...(features.templates !== false ? [{ name: 'Templates', icon: 'description', path: '/templates' }] : []),
+            ...(features.campaigns !== false ? [{ name: 'Campaigns', icon: 'campaign', path: '/campaigns' }] : []),
+            ...(features.team_inbox !== false ? [{ name: 'Team Inbox', icon: 'inbox', path: '/inbox' }] : []),
+            ...(features.automation !== false ? [{ name: 'Automation', icon: 'smart_toy', path: '/automation' }] : []),
+            ...(features.flow_builder !== false ? [{ name: 'Flow Builder', icon: 'account_tree', path: '/flow-builder' }] : []),
+            ...(features.agents !== false ? [{ name: 'Agents', icon: 'support_agent', path: '/agents' }] : []),
+            ...(features.analytics !== false ? [{ name: 'Analytics', icon: 'analytics', path: '/analytics' }] : []),
             { name: 'Settings', icon: 'settings', path: '/settings' },
         ];
     } else if (user?.role === 'admin') {
