@@ -2,13 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 
+const FEATURES = [
+    { id: 'dashboard', label: 'Dashboard Overview' },
+    { id: 'contacts', label: 'Contacts & Tags' },
+    { id: 'templates', label: 'WhatsApp Templates' },
+    { id: 'campaigns', label: 'Campaigns' },
+    { id: 'automation', label: 'Automation Rules' },
+    { id: 'agents', label: 'Agents & Team' },
+    { id: 'analytics', label: 'Analytics' },
+    { id: 'flow_builder', label: 'Flow Builder' },
+    { id: 'settings', label: 'Tenant Settings' }
+];
+
 const Agents = () => {
     const [agents, setAgents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     
-    const [newAgent, setNewAgent] = useState({ name: '', email: '', password: '', role: 'agent' });
+    const [newAgent, setNewAgent] = useState({ name: '', email: '', password: '', role: 'agent', permissions: [] });
     const [editingAgent, setEditingAgent] = useState(null);
 
     const fetchAgents = async () => {
@@ -31,7 +43,7 @@ const Agents = () => {
         try {
             await api.post('/admin/agents', newAgent);
             setIsAddModalOpen(false);
-            setNewAgent({ name: '', email: '', password: '', role: 'agent' });
+            setNewAgent({ name: '', email: '', password: '', role: 'agent', permissions: [] });
             fetchAgents();
         } catch (err) {
             alert('Failed to add agent: ' + (err.response?.data?.message || err.message));
@@ -45,6 +57,7 @@ const Agents = () => {
                 name: editingAgent.name,
                 email: editingAgent.email,
                 role: editingAgent.role,
+                permissions: editingAgent.permissions || [],
                 password: editingAgent.password || undefined
             });
             setIsEditModalOpen(false);
@@ -146,7 +159,7 @@ const Agents = () => {
                                             <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button 
                                                     onClick={() => {
-                                                        setEditingAgent({ ...agent, password: '' });
+                                                        setEditingAgent({ ...agent, password: '', permissions: agent.permissions || [] });
                                                         setIsEditModalOpen(true);
                                                     }}
                                                     className="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-primary/5 rounded-lg"
@@ -249,6 +262,33 @@ const Agents = () => {
                                                 </select>
                                             </div>
                                         </div>
+                                        
+                                        {newAgent.role === 'agent' && (
+                                            <div className="pt-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 block">Feature Permissions (Inbox included by default)</label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {FEATURES.map(feat => (
+                                                        <label key={feat.id} className="flex items-center gap-2 text-sm text-on-surface cursor-pointer p-2 rounded-lg hover:bg-surface-container-low transition-colors border border-outline-variant/10">
+                                                            <input 
+                                                                type="checkbox"
+                                                                className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary"
+                                                                checked={newAgent.permissions?.includes(feat.id)}
+                                                                onChange={(e) => {
+                                                                    const perms = newAgent.permissions || [];
+                                                                    setNewAgent({
+                                                                        ...newAgent, 
+                                                                        permissions: e.target.checked 
+                                                                            ? [...perms, feat.id] 
+                                                                            : perms.filter(p => p !== feat.id)
+                                                                    });
+                                                                }}
+                                                            />
+                                                            {feat.label}
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                         
                                         <div className="pt-6 border-t border-outline-variant/10 flex justify-end gap-3">
                                             <button 
@@ -359,6 +399,33 @@ const Agents = () => {
                                                 </select>
                                             </div>
                                         </div>
+                                        
+                                        {editingAgent.role === 'agent' && (
+                                            <div className="pt-2">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-on-surface-variant mb-2 block">Feature Permissions (Inbox included by default)</label>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {FEATURES.map(feat => (
+                                                        <label key={feat.id} className="flex items-center gap-2 text-sm text-on-surface cursor-pointer p-2 rounded-lg hover:bg-surface-container-low transition-colors border border-outline-variant/10">
+                                                            <input 
+                                                                type="checkbox"
+                                                                className="w-4 h-4 rounded text-primary focus:ring-primary accent-primary"
+                                                                checked={editingAgent.permissions?.includes(feat.id)}
+                                                                onChange={(e) => {
+                                                                    const perms = editingAgent.permissions || [];
+                                                                    setEditingAgent({
+                                                                        ...editingAgent, 
+                                                                        permissions: e.target.checked 
+                                                                            ? [...perms, feat.id] 
+                                                                            : perms.filter(p => p !== feat.id)
+                                                                    });
+                                                                }}
+                                                            />
+                                                            {feat.label}
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                         
                                         <div className="pt-6 border-t border-outline-variant/10 flex justify-end gap-3">
                                             <button 

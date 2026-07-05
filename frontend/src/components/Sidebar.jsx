@@ -9,21 +9,24 @@ const Sidebar = () => {
     const { user, logout } = useAuth();
     const { darkMode } = useTheme();
 
-    const menuItems = user?.role === 'admin' ? [
-        { name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-        { name: 'Contacts', icon: 'contacts', path: '/contacts' },
-        { name: 'Templates', icon: 'description', path: '/templates' },
-        { name: 'Campaigns', icon: 'campaign', path: '/campaigns' },
-        { name: 'Team Inbox', icon: 'inbox', path: '/inbox' },
-        { name: 'Automation', icon: 'smart_toy', path: '/automation' },
-        { name: 'Flow Builder', icon: 'account_tree', path: '/flow-builder' },
-        { name: 'Agents', icon: 'support_agent', path: '/agents' },
-        { name: 'Analytics', icon: 'analytics', path: '/analytics' },
-        { name: 'Settings', icon: 'settings', path: '/settings' },
-    ] : [
-        { name: 'Team Inbox', icon: 'inbox', path: '/inbox' },
-        { name: 'Contacts', icon: 'contacts', path: '/contacts' },
+    const allMenuItems = [
+        { name: 'Dashboard', icon: 'dashboard', path: '/dashboard', id: 'dashboard' },
+        { name: 'Contacts', icon: 'contacts', path: '/contacts', id: 'contacts' },
+        { name: 'Templates', icon: 'description', path: '/templates', id: 'templates' },
+        { name: 'Campaigns', icon: 'campaign', path: '/campaigns', id: 'campaigns' },
+        { name: 'Team Inbox', icon: 'inbox', path: '/inbox', id: 'inbox' },
+        { name: 'Automation', icon: 'smart_toy', path: '/automation', id: 'automation' },
+        { name: 'Flow Builder', icon: 'account_tree', path: '/flow-builder', id: 'flow_builder' },
+        { name: 'Agents', icon: 'support_agent', path: '/agents', id: 'agents' },
+        { name: 'Analytics', icon: 'analytics', path: '/analytics', id: 'analytics' },
+        { name: 'Settings', icon: 'settings', path: '/settings', id: 'settings' },
     ];
+
+    const menuItems = allMenuItems.filter(item => {
+        if (user?.role === 'admin') return true;
+        if (item.id === 'inbox') return true;
+        return user?.permissions?.includes(item.id);
+    });
 
     const handleLogout = () => {
         logout();

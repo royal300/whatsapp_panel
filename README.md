@@ -85,4 +85,4 @@ We include a custom automated deployment script to sync code directly to your VP
 2. This script automatically builds the frontend remotely and syncs changes directly to GitHub!
 
 ---
-*Created with ❤️ by Antigravity AI*
+*Created with ❤️ by Sandipan Sarkar*
