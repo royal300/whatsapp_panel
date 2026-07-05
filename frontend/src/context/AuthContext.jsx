@@ -13,7 +13,9 @@ export const AuthProvider = ({ children }) => {
             if (token) {
                 try {
                     const response = await api.get('/user');
-                    setUser(response.data.user);
+                    const { user, tenant } = response.data;
+                    if (tenant) user.tenant = tenant;
+                    setUser(user);
                 } catch (err) {
                     localStorage.removeItem('token');
                 }
@@ -25,8 +27,9 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         const response = await api.post('/login', { email, password });
-        const { access_token, user } = response.data;
+        const { access_token, user, tenant } = response.data;
         localStorage.setItem('token', access_token);
+        if (tenant) user.tenant = tenant;
         setUser(user);
         return response.data;
     };
@@ -39,8 +42,9 @@ export const AuthProvider = ({ children }) => {
 
     const verifyOtp = async (email, otp) => {
         const response = await api.post('/verify-otp', { email, otp });
-        const { access_token, user } = response.data;
+        const { access_token, user, tenant } = response.data;
         localStorage.setItem('token', access_token);
+        if (tenant) user.tenant = tenant;
         setUser(user);
         return response.data;
     };

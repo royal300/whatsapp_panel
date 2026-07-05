@@ -50,4 +50,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/agents/{id}', [\App\Http\Controllers\AgentController::class, 'update']);
         Route::delete('/admin/agents/{id}', [\App\Http\Controllers\AgentController::class, 'destroy']);
     });
+
+    Route::prefix('super-admin')->group(function () {
+        Route::get('/tenants', [\App\Http\Controllers\SuperAdminController::class, 'getTenants']);
+        Route::put('/tenants/{id}/features', [\App\Http\Controllers\SuperAdminController::class, 'updateFeatures']);
+    });
 });

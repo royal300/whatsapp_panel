@@ -9,24 +9,34 @@ const Sidebar = () => {
     const { user, logout } = useAuth();
     const { darkMode } = useTheme();
 
-    const allMenuItems = [
-        { name: 'Dashboard', icon: 'dashboard', path: '/dashboard', id: 'dashboard' },
-        { name: 'Contacts', icon: 'contacts', path: '/contacts', id: 'contacts' },
-        { name: 'Templates', icon: 'description', path: '/templates', id: 'templates' },
-        { name: 'Campaigns', icon: 'campaign', path: '/campaigns', id: 'campaigns' },
-        { name: 'Team Inbox', icon: 'inbox', path: '/inbox', id: 'inbox' },
-        { name: 'Automation', icon: 'smart_toy', path: '/automation', id: 'automation' },
-        { name: 'Flow Builder', icon: 'account_tree', path: '/flow-builder', id: 'flow_builder' },
-        { name: 'Agents', icon: 'support_agent', path: '/agents', id: 'agents' },
-        { name: 'Analytics', icon: 'analytics', path: '/analytics', id: 'analytics' },
-        { name: 'Settings', icon: 'settings', path: '/settings', id: 'settings' },
-    ];
+    const features = user?.tenant?.features || {};
 
-    const menuItems = allMenuItems.filter(item => {
-        if (user?.role === 'admin') return true;
-        if (item.id === 'inbox') return true;
-        return user?.permissions?.includes(item.id);
-    });
+    let menuItems = [];
+    if (user?.role === 'super_admin') {
+        menuItems = [
+            { name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
+            { name: 'Tenants Management', icon: 'admin_panel_settings', path: '/super-admin' },
+            { name: 'Settings', icon: 'settings', path: '/settings' },
+        ];
+    } else if (user?.role === 'admin') {
+        menuItems = [
+            { name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
+            { name: 'Contacts', icon: 'contacts', path: '/contacts' },
+            ...(features.templates !== false ? [{ name: 'Templates', icon: 'description', path: '/templates' }] : []),
+            ...(features.campaigns !== false ? [{ name: 'Campaigns', icon: 'campaign', path: '/campaigns' }] : []),
+            ...(features.team_inbox !== false ? [{ name: 'Team Inbox', icon: 'inbox', path: '/inbox' }] : []),
+            ...(features.automation !== false ? [{ name: 'Automation', icon: 'smart_toy', path: '/automation' }] : []),
+            ...(features.flow_builder !== false ? [{ name: 'Flow Builder', icon: 'account_tree', path: '/flow-builder' }] : []),
+            ...(features.agents !== false ? [{ name: 'Agents', icon: 'support_agent', path: '/agents' }] : []),
+            ...(features.analytics !== false ? [{ name: 'Analytics', icon: 'analytics', path: '/analytics' }] : []),
+            ...(features.settings !== false ? [{ name: 'Settings', icon: 'settings', path: '/settings' }] : []),
+        ];
+    } else {
+        menuItems = [
+            ...(features.team_inbox !== false ? [{ name: 'Team Inbox', icon: 'inbox', path: '/inbox' }] : []),
+            { name: 'Contacts', icon: 'contacts', path: '/contacts' },
+        ];
+    }
 
     const handleLogout = () => {
         logout();

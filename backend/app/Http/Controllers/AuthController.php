@@ -123,7 +123,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
+            'tenant' => $user->tenant
         ]);
     }
 
@@ -135,6 +136,10 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json(['user' => $request->user()]);
+        $user = $request->user();
+        return response()->json([
+            'user' => $user,
+            'tenant' => $user->tenant
+        ]);
     }
 }

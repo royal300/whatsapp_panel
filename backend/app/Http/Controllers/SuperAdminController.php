@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Tenant;
+use Illuminate\Http\Request;
+
+class SuperAdminController extends Controller
+{
+    public function getTenants(Request $request)
+    {
+        // Only super_admin allowed
+        if ($request->user()->role !== 'super_admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Return all tenants with their primary owner
+        $tenants = Tenant::with(['users' => function($query) {
+            $query->where('role', 'admin')->select('id', 'tenant_id', 'name', 'email');
+        }])->get();
+
+        return response()->json($tenants);
+    }
+
+    public function updateFeatures(Request $request, $id)
+    {
+        if ($request->user()->role !== 'super_admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'features' => 'required|array'
+        ]);
+
+        $tenant = Tenant::findOrFail($id);
+        $tenant->features = $request->features;
+        $tenant->save();
+
+        return response()->json(['message' => 'Features updated successfully', 'tenant' => $tenant]);
+    }
+}

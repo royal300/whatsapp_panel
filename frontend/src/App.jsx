@@ -16,6 +16,7 @@ import Agents from './pages/Agents';
 import FlowBuilder from './pages/FlowBuilder';
 import Layout from './components/Layout';
 import Home from './pages/Home';
+import SuperAdmin from './pages/SuperAdmin';
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -23,13 +24,16 @@ const PrivateRoute = ({ children }) => {
     return user ? children : <Navigate to="/login" />;
 };
 
-const PermissionRoute = ({ children, feature }) => {
+const AdminRoute = ({ children }) => {
     const { user, loading } = useAuth();
     if (loading) return <div>Loading...</div>;
-    if (!user) return <Navigate to="/login" />;
-    if (user.role === 'admin') return children;
-    if (user.permissions?.includes(feature)) return children;
-    return <Navigate to="/inbox" />;
+    return user && user.role === 'admin' ? children : <Navigate to="/inbox" />;
+};
+
+const SuperAdminRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
+    return user && user.role === 'super_admin' ? children : <Navigate to="/dashboard" />;
 };
 
 function App() {
@@ -45,9 +49,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="dashboard">
+                                    <AdminRoute>
                                         <Dashboard />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -57,9 +61,7 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="contacts">
-                                        <Contacts />
-                                    </PermissionRoute>
+                                    <Contacts />
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -69,9 +71,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="templates">
+                                    <AdminRoute>
                                         <Templates />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -91,9 +93,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="campaigns">
+                                    <AdminRoute>
                                         <Campaigns />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -103,9 +105,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="automation">
+                                    <AdminRoute>
                                         <Automation />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -115,9 +117,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="agents">
+                                    <AdminRoute>
                                         <Agents />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -127,9 +129,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="settings">
+                                    <AdminRoute>
                                         <Settings />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -139,9 +141,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="analytics">
+                                    <AdminRoute>
                                         <Analytics />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -151,14 +153,26 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <PermissionRoute feature="flow_builder">
+                                    <AdminRoute>
                                         <FlowBuilder />
-                                    </PermissionRoute>
+                                    </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
                     />
-                    <Route path="/" element={<Home />} />
+                    <Route 
+                        path="/super-admin" 
+                        element={
+                            <PrivateRoute>
+                                <SuperAdminRoute>
+                                    <Layout>
+                                        <SuperAdmin />
+                                    </Layout>
+                                </SuperAdminRoute>
+                            </PrivateRoute>
+                        } 
+                    />
+                    <Route path="/" element={<Navigate to="/dashboard" />} />
                 </Routes>
             </Router>
         </AuthProvider>
