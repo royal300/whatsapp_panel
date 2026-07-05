@@ -1,20 +1,22 @@
 # Royal300 WhatsApp SaaS Panel
 
-A comprehensive WhatsApp Marketing and Team Inbox solution built on the Meta WhatsApp Cloud API.
+A comprehensive WhatsApp Marketing and Automation solution built on the Meta WhatsApp Cloud API. 
 
 ## 🚀 Key Features
-- **Campaign Management**: Broadcast personalized messages using mapping variables (`{{1}}`, `{{2}}`).
-- **Template Synchronization**: Real-time sync with Meta's approved templates.
-- **Team Inbox**: Unified dashboard for incoming/outgoing chats with auto-retry and real-time polling.
-- **Detailed Analytics**: Track delivery status, read rates, and recipient logs.
-- **SaaS Ready**: Multi-tenant architecture with per-tenant WhatsApp configurations and billing (in progress).
+- **Visual Flow Builder**: An interactive, drag-and-drop node graph editor to design custom conversation flows (Triggers, Conditions, Actions, Messages).
+- **Campaign Management**: Broadcast personalized messages to imported contact lists with dynamic variables (`{{1}}`, `{{2}}`).
+- **Team Inbox**: Unified real-time chat interface with dynamic unread message indicators, auto-retry logic, and seamless WhatsApp Template reconstruction.
+- **Automation Rules**: Set up quick keyword-based autoresponders.
+- **Template Synchronization**: Real-time sync with Meta's approved WhatsApp templates.
+- **Detailed Analytics**: Track delivery statuses, read rates, and monitor campaign performance.
+- **SaaS Ready**: Multi-tenant architecture designed to scale.
 
 ---
 
 ## 🛠️ Technology Stack
+- **Frontend**: React 18, Tailwind CSS, Rsbuild (Fast bundler)
 - **Backend**: Laravel 11, MySQL, PHP 8.2+
-- **Frontend**: React 18, Tailwind CSS, Rsbuild
-- **Real-time**: Laravel Echo & Polling Fallback
+- **Real-time Engine**: API Polling Fallbacks (Laravel Echo ready)
 - **Integrations**: Meta WhatsApp Cloud API
 
 ---
@@ -60,7 +62,7 @@ A comprehensive WhatsApp Marketing and Team Inbox solution built on the Meta Wha
 
 ---
 
-## 🔑 Access Credentials (Dev)
+## 🔑 Access Credentials (Local Dev)
 | Role | Email | Password |
 | :--- | :--- | :--- |
 | **Admin** | `admin@royal300.com` | `password123` |
@@ -68,8 +70,8 @@ A comprehensive WhatsApp Marketing and Team Inbox solution built on the Meta Wha
 
 ---
 
-## 📡 Webhook Setup (Local)
-To receive incoming messages on `localhost`:
+## 📡 Webhook Setup
+To receive incoming WhatsApp messages locally:
 1. Expose your server using `ngrok http 8000`.
 2. Set Callback URL in Meta: `[NGROK_URL]/api/webhook`.
 3. Set Verify Token: `royal300_secret_token`.
@@ -77,12 +79,10 @@ To receive incoming messages on `localhost`:
 
 ---
 
-## 📄 Recent Updates
-- **2026-03-23**: 
-  - Integrated Broadcast Sync with Team Inbox.
-  - Implemented Template Reconstruction (Actual text instead of placeholders).
-  - Added 10-second polling and auto-scroll to Inbox UI.
-  - Enabled metadata tracking for campaigns.
+## 🚀 Deployment (VPS)
+We include a custom automated deployment script to sync code directly to your VPS.
+1. Run `./vps_sync.sh` from your local machine to sync files securely via `rsync`.
+2. This script automatically builds the frontend remotely and syncs changes directly to GitHub!
 
 ---
 *Created with ❤️ by Antigravity AI*
