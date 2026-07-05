@@ -36,6 +36,15 @@ const SuperAdminRoute = ({ children }) => {
     return user && user.role === 'super_admin' ? children : <Navigate to="/dashboard" />;
 };
 
+const FeatureRoute = ({ feature, fallback = "/dashboard", children }) => {
+    const { user, loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
+    if (user && user.role === 'super_admin') return children;
+    const features = user?.tenant?.features || {};
+    if (features[feature] === false) return <Navigate to={fallback} />;
+    return children;
+};
+
 function App() {
     return (
         <ThemeProvider>
@@ -72,7 +81,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <Templates />
+                                        <FeatureRoute feature="templates">
+                                            <Templates />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
@@ -83,7 +94,9 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Layout>
-                                    <Inbox />
+                                    <FeatureRoute feature="team_inbox" fallback="/contacts">
+                                        <Inbox />
+                                    </FeatureRoute>
                                 </Layout>
                             </PrivateRoute>
                         } 
@@ -94,7 +107,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <Campaigns />
+                                        <FeatureRoute feature="campaigns">
+                                            <Campaigns />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
@@ -106,7 +121,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <Automation />
+                                        <FeatureRoute feature="automation">
+                                            <Automation />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
@@ -118,7 +135,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <Agents />
+                                        <FeatureRoute feature="agents">
+                                            <Agents />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
@@ -142,7 +161,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <Analytics />
+                                        <FeatureRoute feature="analytics">
+                                            <Analytics />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
@@ -154,7 +175,9 @@ function App() {
                             <PrivateRoute>
                                 <Layout>
                                     <AdminRoute>
-                                        <FlowBuilder />
+                                        <FeatureRoute feature="flow_builder">
+                                            <FlowBuilder />
+                                        </FeatureRoute>
                                     </AdminRoute>
                                 </Layout>
                             </PrivateRoute>
