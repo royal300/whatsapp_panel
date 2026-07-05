@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('templates', TemplateController::class);
     Route::apiResource('campaigns', CampaignController::class);
     Route::get('campaigns/{campaign}/analytics', [CampaignController::class, 'analytics']);
+    Route::get('analytics', [\App\Http\Controllers\AnalyticsController::class, 'index']);
 
     Route::apiResource('chats', ChatController::class);
     Route::post('chats/{chat}/send', [ChatController::class, 'sendMessage']);

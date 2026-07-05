@@ -12,15 +12,17 @@ const Dashboard = () => {
         readRate: 0, 
         campaigns: [] 
     });
+    const [analytics, setAnalytics] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const [contactsRes, campaignsRes] = await Promise.all([
+                const [contactsRes, campaignsRes, analyticsRes] = await Promise.all([
                     api.get('/contacts'),
-                    api.get('/campaigns')
+                    api.get('/campaigns'),
+                    api.get('/analytics')
                 ]);
                 
                 const campaigns = campaignsRes.data || [];
@@ -60,6 +62,7 @@ const Dashboard = () => {
                     readRate,
                     campaigns: campaigns.slice(0, 3) 
                 });
+                setAnalytics(analyticsRes.data);
             } catch (err) {
                 console.error('Failed to fetch dashboard data', err);
             }
@@ -67,6 +70,10 @@ const Dashboard = () => {
         };
         if (user) fetchData();
     }, [user]);
+
+    const usagePercentage = analytics && analytics.usage.limit !== 'Unlimited' 
+        ? Math.min(((analytics.usage.used / analytics.usage.limit) * 100).toFixed(0), 100)
+        : 0;
 
     const formatNumber = (num) => {
         if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -142,15 +149,28 @@ const Dashboard = () => {
 
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-premium border border-outline-variant/5 premium-card">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
-                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
+                        <div className="w-12 h-12 rounded-xl bg-[#25D366]/10 flex items-center justify-center text-[#25D366]">
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>donut_large</span>
                         </div>
-                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)' }}>
-                            Estimate
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full bg-surface-container-highest text-on-surface-variant">
+                            Quota
                         </span>
                     </div>
-                    <p className="text-on-surface-variant text-sm font-medium">Exact Meta Usage Cost</p>
-                    <h3 className="text-3xl font-extrabold text-on-surface mt-1">{loading ? '...' : `₹${(stats.exactCost || 0).toFixed(2)}`}</h3>
+                    <p className="text-on-surface-variant text-sm font-medium">WhatsApp API Usage</p>
+                    <h3 className="text-3xl font-extrabold text-on-surface mt-1">
+                        {loading || !analytics ? '...' : analytics.usage.used.toLocaleString()}
+                    </h3>
+                    {!loading && analytics && (
+                        <div className="w-full mt-3">
+                            <div className="flex justify-between text-[10px] font-bold text-on-surface-variant mb-1">
+                                <span>Used</span>
+                                <span>{analytics.usage.limit === 'Unlimited' ? 'Unlimited' : `${analytics.usage.limit} max`}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                                <div className="h-full bg-[#25D366] transition-all" style={{ width: `${usagePercentage}%` }}></div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

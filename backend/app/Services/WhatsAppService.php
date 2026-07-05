@@ -277,5 +277,41 @@ class WhatsAppService
             'raw'          => $raw,  // Keep raw for debugging
         ];
     }
+
+    /**
+     * Fetch messaging limit tier for the current phone number from Meta.
+     */
+    public function getMessagingLimit()
+    {
+        if (!$this->tenant->meta_phone_number_id) {
+            return 250; // default starting limit if no ID
+        }
+
+        try {
+            $url = "{$this->baseUrl}/{$this->tenant->meta_phone_number_id}?fields=messaging_limit_tier";
+            $response = Http::withToken($this->tenant->meta_access_token)
+                ->timeout(10)
+                ->get($url);
+
+            if ($response->successful()) {
+                $tier = $response->json()['messaging_limit_tier'] ?? 'TIER_250';
+                
+                $limits = [
+                    'TIER_50' => 50,
+                    'TIER_250' => 250,
+                    'TIER_1K' => 1000,
+                    'TIER_10K' => 10000,
+                    'TIER_100K' => 100000,
+                    'UNLIMITED' => 'Unlimited'
+                ];
+
+                return $limits[$tier] ?? 250;
+            }
+        } catch (Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to fetch WhatsApp messaging limit: ' . $e->getMessage());
+        }
+
+        return 250; // fallback
+    }
 }
 
