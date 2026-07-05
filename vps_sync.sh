@@ -28,6 +28,7 @@ rsync -avz --progress --delete \
     --exclude='.env' \
     --exclude='vendor/' \
     --exclude='storage/logs/*' \
+    --exclude='bootstrap/cache/*.php' \
     --exclude='node_modules/' \
     "./backend/" "$VPS_USER@$VPS_IP:$REMOTE_PATH/backend/"
 
