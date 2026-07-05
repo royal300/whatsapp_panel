@@ -54,5 +54,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('super-admin')->group(function () {
         Route::get('/tenants', [\App\Http\Controllers\SuperAdminController::class, 'getTenants']);
         Route::put('/tenants/{id}/features', [\App\Http\Controllers\SuperAdminController::class, 'updateFeatures']);
+        Route::put('/tenants/{id}/validity', [\App\Http\Controllers\SuperAdminController::class, 'updateValidity']);
     });
 });

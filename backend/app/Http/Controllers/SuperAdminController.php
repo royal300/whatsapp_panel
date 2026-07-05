@@ -38,4 +38,21 @@ class SuperAdminController extends Controller
 
         return response()->json(['message' => 'Features updated successfully', 'tenant' => $tenant]);
     }
+
+    public function updateValidity(Request $request, $id)
+    {
+        if ($request->user()->role !== 'super_admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'valid_until' => 'nullable|date'
+        ]);
+
+        $tenant = Tenant::findOrFail($id);
+        $tenant->valid_until = $request->valid_until ? \Carbon\Carbon::parse($request->valid_until) : null;
+        $tenant->save();
+
+        return response()->json(['message' => 'Validity updated successfully', 'tenant' => $tenant]);
+    }
 }

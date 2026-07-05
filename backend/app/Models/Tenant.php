@@ -19,12 +19,14 @@ class Tenant extends Model
         'pusher_app_secret',
         'pusher_app_cluster',
         'ai_quick_replies_enabled',
-        'features'
+        'features',
+        'valid_until'
     ];
 
     protected $casts = [
         'features' => 'array',
-        'ai_quick_replies_enabled' => 'boolean'
+        'ai_quick_replies_enabled' => 'boolean',
+        'valid_until' => 'datetime'
     ];
 
     public function users()

@@ -5,12 +5,20 @@ import { useTheme } from '../context/ThemeContext';
 const SuperAdmin = () => {
     const [tenants, setTenants] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [validityDates, setValidityDates] = useState({});
     const { darkMode } = useTheme();
 
     const fetchTenants = async () => {
         try {
             const res = await api.get('/super-admin/tenants');
             setTenants(res.data);
+            const initialDates = {};
+            res.data.forEach(t => {
+                if (t.valid_until) {
+                    initialDates[t.id] = t.valid_until.split('T')[0];
+                }
+            });
+            setValidityDates(initialDates);
         } catch (error) {
             console.error('Failed to fetch tenants:', error);
         }
@@ -36,6 +44,18 @@ const SuperAdmin = () => {
             console.error('Failed to update features:', error);
             // Revert on error
             setTenants(tenants.map(t => t.id === tenantId ? { ...t, features: tenant.features } : t));
+        }
+    };
+
+    const updateValidity = async (tenantId) => {
+        const dateStr = validityDates[tenantId];
+        try {
+            const res = await api.put(`/super-admin/tenants/${tenantId}/validity`, { valid_until: dateStr || null });
+            setTenants(tenants.map(t => t.id === tenantId ? { ...t, valid_until: res.data.tenant.valid_until } : t));
+            alert('Validity updated successfully');
+        } catch (error) {
+            console.error('Failed to update validity:', error);
+            alert('Failed to update validity');
         }
     };
 
@@ -143,6 +163,55 @@ const SuperAdmin = () => {
                                         </div>
                                     );
                                 })}
+                            </div>
+                        </div>
+
+                        <div className="mt-8 border-t pt-6" style={{ borderColor: 'var(--color-outline-variant)' }}>
+                            <h3 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--color-on-surface-variant)' }}>
+                                Portal Validity
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-4">
+                                <input 
+                                    type="date"
+                                    value={validityDates[tenant.id] || ''}
+                                    onChange={(e) => setValidityDates({...validityDates, [tenant.id]: e.target.value})}
+                                    className="px-4 py-2 rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-transparent text-sm font-medium"
+                                    style={{ borderColor: 'var(--color-outline-variant)', color: 'var(--color-on-surface)' }}
+                                />
+                                <button 
+                                    onClick={() => updateValidity(tenant.id)}
+                                    className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold rounded-xl transition-colors"
+                                >
+                                    Update Date
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        setValidityDates({...validityDates, [tenant.id]: ''});
+                                        // Immediately submit empty to set to lifetime
+                                        api.put(`/super-admin/tenants/${tenant.id}/validity`, { valid_until: null })
+                                            .then(res => {
+                                                setTenants(tenants.map(t => t.id === tenant.id ? { ...t, valid_until: null } : t));
+                                                alert('Tenant is now set to Lifetime Access');
+                                            })
+                                            .catch(err => {
+                                                console.error('Failed to update validity:', err);
+                                                alert('Failed to update validity');
+                                            });
+                                    }}
+                                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-sm font-bold rounded-xl transition-colors"
+                                    style={{ color: 'var(--color-on-surface)' }}
+                                >
+                                    Set Lifetime
+                                </button>
+                                {tenant.valid_until ? (
+                                    <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400">
+                                        Expires: {new Date(tenant.valid_until).toLocaleDateString()}
+                                    </span>
+                                ) : (
+                                    <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400">
+                                        Lifetime Access
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </div>

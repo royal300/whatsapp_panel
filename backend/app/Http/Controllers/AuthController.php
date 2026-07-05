@@ -118,6 +118,22 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        // Check if tenant has expired
+        if ($user->tenant && $user->tenant->valid_until && Carbon::now()->gt($user->tenant->valid_until)) {
+            // Only send the email once every 24 hours to prevent spam
+            $cacheKey = 'expired_notified_' . $user->id;
+            if (!Cache::has($cacheKey)) {
+                try {
+                    Mail::to($user->email)->send(new \App\Mail\PortalExpiredMail($user->name));
+                    Cache::put($cacheKey, true, now()->addHours(24));
+                } catch (\Exception $e) {
+                    \Log::error('Failed to send PortalExpiredMail: ' . $e->getMessage());
+                }
+            }
+
+            return response()->json(['message' => 'Your portal has expired. Please contact support to renew your subscription.'], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
