@@ -104,7 +104,7 @@ const Dashboard = () => {
             </div>
 
             {/* Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-premium border border-outline-variant/5 premium-card">
                     <div className="flex justify-between items-start mb-4">
                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
@@ -145,6 +145,19 @@ const Dashboard = () => {
                     </div>
                     <p className="text-on-surface-variant text-sm font-medium">Avg Read Rate</p>
                     <h3 className="text-3xl font-extrabold text-on-surface mt-1">{loading ? '...' : stats.readRate.toFixed(1)}%</h3>
+                </div>
+
+                <div className="bg-surface-container-lowest p-6 rounded-xl shadow-premium border border-outline-variant/5 premium-card">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
+                            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
+                        </div>
+                        <span className="flex items-center text-xs font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--badge-slate-bg)', color: 'var(--badge-slate-text)' }}>
+                            Estimate
+                        </span>
+                    </div>
+                    <p className="text-on-surface-variant text-sm font-medium">Exact Meta Usage Cost</p>
+                    <h3 className="text-3xl font-extrabold text-on-surface mt-1">{loading ? '...' : `₹${(stats.exactCost || 0).toFixed(2)}`}</h3>
                 </div>
 
                 <div className="bg-surface-container-lowest p-6 rounded-xl shadow-premium border border-outline-variant/5 premium-card">
