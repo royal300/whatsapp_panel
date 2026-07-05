@@ -59,6 +59,20 @@ const SuperAdmin = () => {
         }
     };
 
+    const deleteTenant = async (tenantId) => {
+        if (!window.confirm('Are you absolutely sure you want to delete this tenant? This will permanently delete the tenant and all associated users. This action cannot be undone.')) {
+            return;
+        }
+        try {
+            await api.delete(`/super-admin/tenants/${tenantId}`);
+            setTenants(tenants.filter(t => t.id !== tenantId));
+            alert('Tenant deleted successfully');
+        } catch (error) {
+            console.error('Failed to delete tenant:', error);
+            alert('Failed to delete tenant');
+        }
+    };
+
     const FEATURES = [
         { key: 'flow_builder', label: 'Flow Builder' },
         { key: 'automation', label: 'Automation' },
@@ -115,16 +129,25 @@ const SuperAdmin = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="text-right hidden sm:block">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Primary Owner</p>
-                                {tenant.users && tenant.users.length > 0 ? (
-                                    <>
-                                        <p className="text-sm font-bold" style={{ color: 'var(--color-on-surface)' }}>{tenant.users[0].name}</p>
-                                        <p className="text-xs" style={{ color: 'var(--color-on-surface-variant)' }}>{tenant.users[0].email}</p>
-                                    </>
-                                ) : (
-                                    <p className="text-sm italic text-gray-400">No owner found</p>
-                                )}
+                            <div className="text-right hidden sm:flex sm:flex-col sm:items-end sm:gap-2">
+                                <div>
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Primary Owner</p>
+                                    {tenant.users && tenant.users.length > 0 ? (
+                                        <>
+                                            <p className="text-sm font-bold" style={{ color: 'var(--color-on-surface)' }}>{tenant.users[0].name}</p>
+                                            <p className="text-xs" style={{ color: 'var(--color-on-surface-variant)' }}>{tenant.users[0].email}</p>
+                                        </>
+                                    ) : (
+                                        <p className="text-sm italic text-gray-400">No owner found</p>
+                                    )}
+                                </div>
+                                <button 
+                                    onClick={() => deleteTenant(tenant.id)}
+                                    className="mt-2 flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 rounded-lg transition-colors border border-red-200 dark:border-red-800"
+                                >
+                                    <span className="material-symbols-outlined text-[16px]">delete</span>
+                                    Delete Tenant
+                                </button>
                             </div>
                         </div>
 

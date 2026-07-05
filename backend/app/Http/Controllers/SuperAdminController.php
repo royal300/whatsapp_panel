@@ -55,4 +55,21 @@ class SuperAdminController extends Controller
 
         return response()->json(['message' => 'Validity updated successfully', 'tenant' => $tenant]);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        if ($request->user()->role !== 'super_admin') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $tenant = Tenant::findOrFail($id);
+
+        // Delete all associated users first to prevent orphaned records
+        $tenant->users()->delete();
+        
+        // Then delete the tenant
+        $tenant->delete();
+
+        return response()->json(['message' => 'Tenant and associated users deleted successfully']);
+    }
 }
