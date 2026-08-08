@@ -13,9 +13,20 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user() || $request->user()->role !== $role) {
+        if (!$request->user()) {
+            return response()->json(['message' => 'Unauthorized action.'], 403);
+        }
+
+        $userRole = $request->user()->role;
+
+        // super-admin can access everything
+        if ($userRole === 'super-admin') {
+            return $next($request);
+        }
+
+        if (!in_array($userRole, $roles)) {
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 
