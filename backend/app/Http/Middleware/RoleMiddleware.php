@@ -21,8 +21,8 @@ class RoleMiddleware
 
         $userRole = $request->user()->role;
 
-        // super-admin can access everything
-        if ($userRole === 'super-admin') {
+        // super_admin can access everything
+        if ($userRole === 'super_admin') {
             return $next($request);
         }
 
