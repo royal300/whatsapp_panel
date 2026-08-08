@@ -33,7 +33,7 @@ class WhatsAppService
             ->post($url, [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
-                'to' => $to,
+                'to' => ltrim($to, '+'),
                 'type' => 'text',
                 'text' => [
                     'preview_url' => false,
@@ -57,7 +57,7 @@ class WhatsAppService
             ->post($url, [
                 'messaging_product' => 'whatsapp',
                 'recipient_type' => 'individual',
-                'to' => $to,
+                'to' => ltrim($to, '+'),
                 'type' => 'template',
                 'template' => [
                     'name' => $templateName,
