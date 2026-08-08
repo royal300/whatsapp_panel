@@ -461,7 +461,57 @@ const FlowBuilder = () => {
                         <span className="material-symbols-outlined" style={{ fontSize: 14 }}>play_arrow</span>
                         Test Flow
                     </button>
-                    <button onClick={() => patch(f => ({ ...f, published: !f.published }))}
+                    <button onClick={async () => {
+                        const flow = activeFlow;
+                        if (!flow) return;
+                        
+                        // Parse nodes to get rule data
+                        const triggerNode = flow.nodes.find(n => n.type === 'trigger');
+                        const actionNode = flow.nodes.find(n => n.type === 'action');
+                        
+                        if (!triggerNode || !triggerNode.keyword) {
+                            alert("Trigger node must have a keyword configured to publish.");
+                            return;
+                        }
+                        if (!actionNode || !actionNode.templateId) {
+                            alert("Action node must have a WhatsApp template selected to publish.");
+                            return;
+                        }
+
+                        const payload = {
+                            name: flow.name,
+                            trigger_keyword: triggerNode.keyword,
+                            trigger_type: 'keyword',
+                            action_type: 'send_message',
+                            template_id: actionNode.templateId,
+                            is_active: true
+                        };
+
+                        try {
+                            // Find if this flow exists in the DB
+                            const existingRules = await api.get('/automation-rules');
+                            const match = existingRules.data.find(r => r.name === flow.name);
+                            
+                            if (flow.published) {
+                                // Unpublish
+                                if (match) await api.delete(`/automation-rules/${match.id}`);
+                                patch(f => ({ ...f, published: false }));
+                                alert("Flow unpublished and turned off.");
+                            } else {
+                                // Publish
+                                if (match) {
+                                    await api.put(`/automation-rules/${match.id}`, payload);
+                                } else {
+                                    await api.post('/automation-rules', payload);
+                                }
+                                patch(f => ({ ...f, published: true }));
+                                alert("Flow published successfully! It is now active on the backend.");
+                            }
+                        } catch (error) {
+                            console.error("Failed to publish flow", error);
+                            alert("Error publishing flow to backend. See console.");
+                        }
+                    }}
                         style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 14px', borderRadius: 10, fontSize: 12, fontWeight: 900, color: 'white', background: activeFlow?.published ? '#15803d' : '#16a34a', border: 'none', cursor: 'pointer' }}>
                         <span className="material-symbols-outlined" style={{ fontSize: 14 }}>{activeFlow?.published ? 'check_circle' : 'publish'}</span>
                         {activeFlow?.published ? 'Published ✓' : 'Publish'}
