@@ -26,8 +26,17 @@ class ChatController extends Controller
     public function sendMessage(Request $request, Chat $chat)
     {
         $validated = $request->validate([
-            'message_body' => 'required|string',
+            'message_body' => 'nullable|string',
+            'type' => 'nullable|string|in:text,product',
+            'product_retailer_id' => 'required_if:type,product|string',
+            'footer_text' => 'nullable|string'
         ]);
+
+        $type = $validated['type'] ?? 'text';
+
+        if ($type === 'text' && empty($validated['message_body'])) {
+            return response()->json(['message' => 'Message body is required for text messages'], 422);
+        }
 
         $billing = new BillingService();
         $tenant = Auth::user()->tenant;
@@ -38,7 +47,23 @@ class ChatController extends Controller
 
         try {
             $whatsapp = new WhatsAppService($tenant);
-            $whatsapp->sendTextMessage($chat->contact->phone_number, $validated['message_body']);
+            
+            if ($type === 'product') {
+                $whatsapp->sendProductMessage(
+                    $chat->contact->phone_number,
+                    $validated['product_retailer_id'],
+                    $validated['message_body'] ?? null,
+                    $validated['footer_text'] ?? null
+                );
+                
+                $messageLogBody = "📦 Product Sent: " . $validated['product_retailer_id'];
+                if (!empty($validated['message_body'])) {
+                    $messageLogBody .= "\n\n" . $validated['message_body'];
+                }
+            } else {
+                $whatsapp->sendTextMessage($chat->contact->phone_number, $validated['message_body']);
+                $messageLogBody = $validated['message_body'];
+            }
 
             $billing->incrementUsage($tenant);
 
@@ -46,7 +71,7 @@ class ChatController extends Controller
                 'chat_id' => $chat->id,
                 'sender_type' => 'agent',
                 'user_id' => Auth::id(),
-                'message_body' => $validated['message_body'],
+                'message_body' => $messageLogBody,
                 'status' => 'sent'
             ]);
 

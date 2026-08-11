@@ -45,6 +45,45 @@ class WhatsAppService
     }
 
     /**
+     * Send a single product message to a user.
+     */
+    public function sendProductMessage(string $to, string $productRetailerId, ?string $bodyText = null, ?string $footerText = null)
+    {
+        if (!$this->tenant->meta_phone_number_id) throw new Exception("Phone Number ID missing.");
+        if (!$this->tenant->meta_catalog_id) throw new Exception("Meta Catalog ID missing in settings.");
+
+        $url = "{$this->baseUrl}/{$this->tenant->meta_phone_number_id}/messages";
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => ltrim($to, '+'),
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'product',
+                'action' => [
+                    'catalog_id' => $this->tenant->meta_catalog_id,
+                    'product_retailer_id' => $productRetailerId
+                ]
+            ]
+        ];
+
+        if ($bodyText) {
+            $payload['interactive']['body'] = ['text' => $bodyText];
+        }
+
+        if ($footerText) {
+            $payload['interactive']['footer'] = ['text' => $footerText];
+        }
+
+        $response = Http::withToken($this->tenant->meta_access_token)
+            ->timeout(10)
+            ->post($url, $payload);
+
+        return $response->json();
+    }
+
+    /**
      * Send a template message to a user.
      */
     public function sendTemplateMessage(string $to, string $templateName, string $languageCode = 'en', array $components = [])

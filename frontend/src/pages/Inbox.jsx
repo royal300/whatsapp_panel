@@ -305,9 +305,29 @@ const Inbox = () => {
                         {/* Message Input Area */}
                         <footer className="p-6 bg-surface/60 backdrop-blur-md border-t border-outline-variant/10">
                             <form onSubmit={handleSendMessage} className="bg-surface-container-lowest rounded-2xl shadow-xl shadow-on-surface/5 p-2">
-                                <div className="flex items-center gap-2 px-3 py-2 border-b border-outline-variant/10">
+                                <div className="flex items-center gap-2 px-3 py-2 border-b border-outline-variant/10 relative">
                                     <button type="button" className="p-1.5 text-on-surface-variant hover:text-primary transition-colors">
                                         <span className="material-symbols-outlined">attachment</span>
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            const sku = prompt('Enter Product SKU (Retailer ID):');
+                                            if (sku) {
+                                                const body = prompt('Enter optional message for the product:');
+                                                api.post(`/chats/${selectedChat.id}/send`, {
+                                                    type: 'product',
+                                                    product_retailer_id: sku,
+                                                    message_body: body || null
+                                                }).then(res => {
+                                                    setMessages(prev => [...prev, res.data]);
+                                                }).catch(err => alert('Failed to send product: ' + (err.response?.data?.message || err.message)));
+                                            }
+                                        }}
+                                        className="p-1.5 text-on-surface-variant hover:text-primary transition-colors flex items-center gap-1"
+                                        title="Send Product"
+                                    >
+                                        <span className="material-symbols-outlined">storefront</span>
                                     </button>
                                     <button type="button" className="p-1.5 text-on-surface-variant hover:text-primary transition-colors">
                                         <span className="material-symbols-outlined">mood</span>

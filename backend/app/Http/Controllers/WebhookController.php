@@ -91,6 +91,16 @@ class WebhookController extends Controller
                                 } elseif (isset($msgData['audio']['id'])) {
                                     $mediaUrl = (new \App\Services\WhatsAppService($tenant))->downloadMedia($msgData['audio']['id']);
                                     $messageBody = $mediaUrl ? "Audio: {$mediaUrl}" : '[Audio]';
+                                } elseif (isset($msgData['order']) && isset($msgData['order']['product_items'])) {
+                                    $orderText = $msgData['order']['text'] ?? 'New Order Received!';
+                                    $messageBody = "🛒 **Order Inquiry**\n" . $orderText . "\n\n**Items:**\n";
+                                    foreach ($msgData['order']['product_items'] as $item) {
+                                        $sku = $item['product_retailer_id'] ?? 'Unknown SKU';
+                                        $qty = $item['quantity'] ?? 1;
+                                        $price = $item['item_price'] ?? 0;
+                                        $currency = $item['currency'] ?? '';
+                                        $messageBody .= "- {$qty}x {$sku} ({$currency} {$price})\n";
+                                    }
                                 }
 
                                 $message = \App\Models\Message::create([

@@ -6,6 +6,7 @@ const Settings = () => {
         meta_waba_id: '',
         meta_phone_number_id: '',
         meta_access_token: '',
+        meta_catalog_id: '',
         pusher_app_id: '',
         pusher_app_key: '',
         pusher_app_secret: '',
@@ -61,6 +62,7 @@ const Settings = () => {
                     meta_waba_id: String(data.meta_waba_id || ''),
                     meta_phone_number_id: String(data.meta_phone_number_id || ''),
                     meta_access_token: String(data.meta_access_token || ''),
+                    meta_catalog_id: String(data.meta_catalog_id || ''),
                     pusher_app_id: String(data.pusher_app_id || ''),
                     pusher_app_key: String(data.pusher_app_key || ''),
                     pusher_app_secret: String(data.pusher_app_secret || ''),
@@ -205,6 +207,17 @@ const Settings = () => {
                                             value={formData.meta_phone_number_id}
                                             onChange={(e) => setFormData({...formData, meta_phone_number_id: e.target.value})}
                                         />
+                                    </div>
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Meta Commerce Catalog ID (Optional)</label>
+                                        <input 
+                                            type="text"
+                                            className="w-full bg-surface-container-low border-none rounded-2xl py-4 px-5 text-on-surface font-semibold focus:ring-2 focus:ring-primary/20 transition-all"
+                                            placeholder="e.g. 583920..."
+                                            value={formData.meta_catalog_id}
+                                            onChange={(e) => setFormData({...formData, meta_catalog_id: e.target.value})}
+                                        />
+                                        <p className="text-[10px] text-on-surface-variant font-medium px-1 italic">Required if you want to send product messages from your connected Meta Catalog.</p>
                                     </div>
                                     <div className="col-span-1 md:col-span-2 space-y-2">
                                         <label className="text-xs font-black uppercase tracking-widest text-on-surface-variant ml-1">Permanent Access Token</label>

@@ -60,6 +60,7 @@ class TenantSettingsController extends Controller
             'meta_waba_id',
             'meta_phone_number_id',
             'meta_access_token',
+            'meta_catalog_id',
             'pusher_app_id',
             'pusher_app_key',
             'pusher_app_secret',

@@ -14,6 +14,7 @@ class Tenant extends Model
         'meta_access_token',
         'meta_app_id',
         'meta_app_secret',
+        'meta_catalog_id',
         'pusher_app_id',
         'pusher_app_key',
         'pusher_app_secret',
